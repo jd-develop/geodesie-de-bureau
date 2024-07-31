@@ -1,6 +1,6 @@
 # Géodésie de Bureau
 
-[!Repère Bourdalouë du chemin de fer de Toulouse à Auch (T'.DE - 109)](illustration.jpg)
+![Repère Bourdalouë du chemin de fer de Toulouse à Auch (T'.DE - 109)](illustration.jpg)
 
 >[!Important]
 > Bien que le nom de «&nbsp;Géodésie de Bureau&nbsp;» soit directement inspiré
