@@ -108,12 +108,13 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Repèrements{RESET} :")
     print(f"|- {BLUE}horizontal{RESET} : {prn_json['reperement_horizontal']}")
     print(f"|- {BLUE}vertical{RESET}   : {prn_json['reperement_vertical']}")
+    # TODO triplets de nivellement
 
 
 def dict_from_matricule(matricule: str) -> RNJSON:
     """Returns the dict of the Repère de Nivellement from its matricule"""
     assert len(matricule) != 0
-    matricule = matricule.replace("’", "'").replace("'", "''").lstrip(" ").rstrip(" ")
+    matricule = matricule.replace("’", "'").replace("'", "''").strip(" ")
     matricule_upper_candidate1 = matricule[:-1].upper() + matricule[-1]
     matricule_upper_candidate2 = matricule.upper() 
     url = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod"
