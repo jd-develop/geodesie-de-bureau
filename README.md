@@ -10,3 +10,13 @@
 > n’a pas pour but non plus de s’approprier la propriété intellectuelle de l’IGN
 > ou du Géoportail.
 
+>[!Note]
+> Ce programme est en développement actif
+
+Géodésie de Bureau – gardez une liste des repères de nivellement que vous avez vu&nbsp;!
+
+## Fonctionnalités
+Le but de ce programme sera de pouvoir rentrer les données d’un repère (ou d’automatiquement récupérer sa fiche dans le cas d’un repère NGF), et de pouvoir lier ce repère à des visites et des photos.
+
+Il sera ensuite possible d’exporter la BDD en [geojson](https://geojson.io) pour afficher les repères sur une carte.
+
