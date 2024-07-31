@@ -57,9 +57,9 @@ def print_fiche(rn_json: RNJSON):
     print()
     print(BLUE + f"Matricule{RESET} : {prn_json['matricule']}")
     print(BLUE + f"Système altimétrique{RESET} : {prn_json['systeme_altimetrique']}")
-    print(BLUE + f"Altitude{RESET} : {prn_json['altitude']} (Altitude normale)")
+    print(BLUE + f"Altitude{RESET} : {prn_json['altitude']}m ({prn_json['altitude_type']})")
     if prn_json["altitude_complementaire"]:
-        print(BLUE + f"Altitude{RESET} : {prn_json['altitude_complementaire']} (Altitude complémentaire)")
+        print(BLUE + f"Altitude{RESET} : {prn_json['altitude_complementaire']}m (Altitude complémentaire)")
 
     print()
     print(RED + "=== Dernière visite et observation ===" + RESET)
@@ -108,6 +108,10 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Repèrements{RESET} :")
     print(f"|- {BLUE}horizontal{RESET} : {prn_json['reperement_horizontal']}")
     print(f"|- {BLUE}vertical{RESET}   : {prn_json['reperement_vertical']}")
+
+    if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
+        print()
+        print(RED + str(prn_json["hors_ign"]) + RESET)
     # TODO triplets de nivellement
 
 
@@ -182,6 +186,7 @@ def better_dict(rn_json: RNJSON):
         "systeme_altimetrique": f"NGF-IGN {annee_syst_altimetrique}",
         "altitude": rn_json["properties"]["altitude"],
         "altitude_complementaire": rn_json["properties"]["altitude_complementaire"],
+        "altitude_type": H_TYPE_CODE[rn_json["properties"]["h_type_code"]],
 
         "derniere_observation": rn_json["properties"]["rn_obs_date"],
         "nouveau_calcul": rn_json["properties"]["trg_annee"],
@@ -213,7 +218,9 @@ def better_dict(rn_json: RNJSON):
         "support": rn_json["properties"]["support"],
         "partie_support": rn_json["properties"]["support_partie"],
         "reperement_horizontal": rn_json["properties"]["reper_horiz"],
-        "reperement_vertical": rn_json["properties"]["reper_vertical"]
+        "reperement_vertical": rn_json["properties"]["reper_vertical"],
+
+        "hors_ign": rn_json["properties"]["hors_ign"]
     }
 
 

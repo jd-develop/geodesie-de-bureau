@@ -67,6 +67,28 @@ RN_ETAT = {
     "Y": "Détruit après observation"
 }
 
+H_TYPE_CODE = {
+    2: "Altitude normale",
+    3: "Altitude normale",
+    10: "Altitude orthométrique",
+    11: "Altitude orthométrique",
+    13: "Altitude orthométrique",
+    14: "Altitude orthométrique",
+    15: "Altitude orthométrique",
+    16: "Altitude orthométrique",
+    17: "Altitude orthométrique",
+    18: "Altitude orthométrique",
+    21: "Altitude orthométrique",
+    23: "Altitude orthométrique",
+    26: "Altitude orthométrique",
+    29: "Altitude orthométrique",
+    35: "Altitude orthométrique",
+    37: "Altitude orthométrique",
+    41: "Altitude orthométrique",
+    44: "Altitude orthométrique",
+    169: "Altitude provisoire"
+}
+
 
 def get_rn_type(type_: str):
     return RN_TYPE_CODE.get(type_, "000")
