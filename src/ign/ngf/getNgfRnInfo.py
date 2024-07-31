@@ -67,7 +67,7 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Année de nouveau calcul{RESET} : {prn_json['nouveau_calcul']}")
     print(BLUE + f"Dernière visite{RESET} : {prn_json['derniere_visite']}")
     assert isinstance(prn_json["etat"], str)
-    print(BLUE + f"État{RESET} : {get_etat_color(prn_json['etat'])}")
+    print(BLUE + f"État{RESET} : {get_etat_colour(prn_json['etat'])}")
 
     print()
     print(RED + "=== Type ===" + RESET)

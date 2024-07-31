@@ -56,7 +56,6 @@ RN_TYPE_CODE = {
     "040": "Repère en fonte triangulaire"
 }
 
-
 RN_ETAT = {
     "D": "Détruit",
     "E": "Bon état",
@@ -73,7 +72,7 @@ def get_rn_type(type_: str):
     return RN_TYPE_CODE.get(type_, "000")
 
 
-def get_etat_color(full_type: str):
+def get_etat_colour(full_type: str):
     if full_type == "Bon état":
         return f"\033[32m{full_type}\033[0m"
     return f"\033[31m{full_type}\033[0m"
