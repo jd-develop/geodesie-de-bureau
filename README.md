@@ -1,6 +1,6 @@
 # Géodésie de Bureau
 
-![Repère Bourdalouë du chemin de fer de Toulouse à Auch (T'.DE - 109)](illustration.jpg)
+<img src="illustration.jpg" alt="Repère Bourdalouë du chemin de fer de Toulouse à Auch (T'.DE - 109)" width="300"/>
 
 >[!Important]
 > Bien que le nom de «&nbsp;Géodésie de Bureau&nbsp;» soit directement inspiré
@@ -13,7 +13,7 @@
 >[!Note]
 > Ce programme est en développement actif
 
-Géodésie de Bureau – gardez une liste des repères de nivellement que vous avez vu&nbsp;!
+Géodésie de Bureau – gardez une liste des repères de nivellement que vous avez vus&nbsp;!
 
 ## Fonctionnalités
 Le but de ce programme sera de pouvoir rentrer les données d’un repère (ou d’automatiquement récupérer sa fiche dans le cas d’un repère NGF), et de pouvoir lier ce repère à des visites et des photos.
