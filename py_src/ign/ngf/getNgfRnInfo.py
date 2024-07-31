@@ -119,7 +119,7 @@ def dict_from_matricule(matricule: str) -> RNJSON:
     matricule_upper_candidate2 = matricule.upper() 
     url = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod"
 
-    headers = {"content-type": "application/x-www-form-urlencoded", "Accept-Charset": 'UTF-8'}
+    headers = {"content-type": "application/x-www-form-urlencoded", "Accept-Charset": "UTF-8"}
 
     # data = {"repere_ajax": matricule, "identifiant_visugeod": "identificateur_repere"}
     data = {"h_recherche": f"repere|{matricule}", "t": "france"}
