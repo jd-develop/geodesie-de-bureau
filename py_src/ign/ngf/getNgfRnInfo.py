@@ -31,6 +31,9 @@ GREEN = "\033[92m"
 BLUE = "\033[94m"
 RESET = "\033[00m"
 
+URL = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod"
+HEADERS = {"content-type": "application/x-www-form-urlencoded", "Accept-Charset": "UTF-8"}
+
 
 def limit_dms_coord_for_bbox(dms_coord: str):
     """2.1749 -> 2.1, 48.8039 -> 48.8, -5.0914 -> -5.1"""
@@ -58,7 +61,7 @@ def is_valid_index_choice(choice: str, list_len: int):
         return False
 
 
-def find_matricule_to_use_from_list(matricule_input: str, reperes_found: list[tuple[int, str]]):
+def find_matricule_to_use_from_list(matricule_input: str, reperes_found: list[tuple[int, str]]) -> str:
     if len(reperes_found) == 1:
         return reperes_found[0][1]
     for _, matricule in reperes_found:
@@ -145,17 +148,17 @@ def print_fiche(rn_json: RNJSON):
     # TODO triplets de nivellement
 
 
-def dict_from_matricule(matricule_input: str) -> RNJSON:
-    """Returns the dict of the Repère de Nivellement from its matricule"""
+def choose_rn_from_matricule(matricule_input: str) -> str:
+    """Using the matricule provided by the user, searches for corresponding
+       matricules, lets the user choose one or
+       chooses one automatically if there is no ambiguity"""
     assert len(matricule_input) != 0
     assert "|" not in matricule_input
     matricule_input = matricule_input.replace("’", "'").strip()
-    url = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod"
 
-    headers = {"content-type": "application/x-www-form-urlencoded", "Accept-Charset": "UTF-8"}
-    data_search = {"repere_ajax": matricule_input, "identifiant_visugeod": "identificateur_repere"}
+    data = {"repere_ajax": matricule_input, "identifiant_visugeod": "identificateur_repere"}
 
-    response = requests.post(url, headers=headers, data=data_search)
+    response = requests.post(URL, headers=HEADERS, data=data)
     parser = SearchParser()
     parser.feed(response.text)
     reperes_found = parser.rn_list
@@ -165,18 +168,18 @@ def dict_from_matricule(matricule_input: str) -> RNJSON:
             f"Could not find Repère de Nivellement from matricule {matricule_input}"
         )
 
-    matricule_to_use = find_matricule_to_use_from_list(matricule_input, reperes_found)
+    return find_matricule_to_use_from_list(matricule_input, reperes_found)
 
-    # GET URL OF THE FICHE FROM ID
-    # print(f"https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid={rnid}&geo_cid=0")
 
+def dict_from_matricule(matricule_to_use: str) -> RNJSON:
+    """Returns the dict of the Repère de Nivellement from its matricule"""
     matricule_with_double_primes = matricule_to_use.replace("'", "''")
-    data_getinfo = {"h_recherche": f"repere|{matricule_with_double_primes}", "t": "france"}
-    response = requests.post(url, headers=headers, data=data_getinfo)
+    data = {"h_recherche": f"repere|{matricule_with_double_primes}", "t": "france"}
+    response = requests.post(URL, headers=HEADERS, data=data)
     rn_basic_infos = response.text.split("\n")[0]
     if rn_basic_infos == "1":
         raise GeodeticError(
-            f"Could not find Repère de Nivellement from matricule {matricule_input}"
+            f"Could not find Repère de Nivellement from matricule {matricule_to_use}"
         )
 
     dms_coords_raw = rn_basic_infos.split("|")[0].split()
@@ -255,7 +258,7 @@ def better_dict(rn_json: RNJSON):
 
 if __name__ == "__main__":
     matricule = input("Matricule of the Repère de nivellement: ")
-    print_fiche(dict_from_matricule(matricule))
+    print_fiche(dict_from_matricule(choose_rn_from_matricule(matricule)))
     # I usually test those benchmarks, for their particularities:
     # M.AC - 0-VIII (repère fondamental)
     # T'.D.S3 - 17
@@ -265,4 +268,7 @@ if __name__ == "__main__":
     # N.P.K3Q3 - 58-I
     # T’.D.S3 - 102a
     # M’.A.K3 - 1
+    # M".A.K3L3 - 15-I
+    # FM" - 3-VIII
+    # FM" - 3-V
 
