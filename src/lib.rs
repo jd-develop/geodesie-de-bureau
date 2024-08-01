@@ -63,3 +63,46 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
     }
     result_vec
 }
+
+#[test]
+fn tests_rn_from_matricule() {
+    assert_eq!(rn_from_matricule("T'.D.S3 - 5"), vec![
+        RNIdentificationInfos {
+            id: 452592,
+            name: "T'.D.S3 - 50".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 429495,
+            name: "T'.D.S3 - 52".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 108049,
+            name: "T'.D.S3 - 54".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 108050,
+            name: "T'.D.S3 - 55".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 452593,
+            name: "T'.D.S3 - 56".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 338593,
+            name: "T'.D.S3 - 57 BIS".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 429496,
+            name: "T'.D.S3 - 58".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 521727,
+            name: "T'.D.S3 - 59".to_string(),
+        },
+        RNIdentificationInfos {
+            id: 481574,
+            name: "T'.D.S3 - 5 BIS".to_string(),
+        },
+    ]
+)
+}
