@@ -74,7 +74,7 @@ fn tests_rn_from_matricule() {
         rn_from_matricule("M.AC - 0-VIII"),
         vec![
             RNIdentificationInfos{
-                id: 0,
+                id: 303869,
                 name: "M.AC - 0-VIII".to_string(),
             }
         ]
