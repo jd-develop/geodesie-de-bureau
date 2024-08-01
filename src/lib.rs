@@ -1,7 +1,11 @@
 mod json_mappings;
 use reqwest;
+use std::io::{self, Write};
 
-#[derive(Debug, PartialEq)]
+const SEARCH_RN_URL: &str = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod";
+
+/// What is output from the API call of searching for RNs
+#[derive(Clone, Debug, PartialEq)]
 pub struct RNIdentificationInfos {
     pub id: u32,
     pub name: String,
@@ -39,14 +43,13 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
     let body: String =
         format!("repere_ajax={matricule}&identifiant_visugeod=identificateur_repere");
     let mut resp: String = client
-        .post("https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod")
+        .post(SEARCH_RN_URL)
         .body(body)
         .headers(headers)
         .send()
         .unwrap()
         .text()
         .unwrap();
-    dbg!(&resp);
     if resp.contains("Pas de résultat") {
         return vec![];
     }
@@ -66,6 +69,76 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
         });
     }
     result_vec
+}
+
+/// Prompts the user to select a repère in the provided repères_found
+pub fn find_matricule_to_use_from_list(
+    matricule_input: &str,
+    repères_found: &Vec<RNIdentificationInfos>,
+) -> RNIdentificationInfos {
+    // If there is only one repère in the list. we return it directly
+    if repères_found.len() == 1 {
+        return repères_found[0].clone();
+    }
+    // If there is one repère in the list that matches exactly the provided matricule, we return it directly
+    if let Some(repère) = repères_found
+        .iter()
+        .find(|infos_repère| infos_repère.name == matricule_input)
+    {
+        return repère.clone();
+    }
+    let mut string_found_repères: String = String::new();
+    // Get some sizes to align the text (we therefore need to parse the list twice)
+    let mut max_size_indexes: usize = 0;
+    let mut max_size_matricule: usize = 0;
+    let mut max_size_cid: usize = 0;
+    for (index, repère) in repères_found.iter().enumerate() {
+        if index.to_string().len() > max_size_indexes {
+            max_size_indexes = index.to_string().len();
+        };
+        if repère.name.to_string().len() > max_size_matricule {
+            max_size_matricule = repère.name.to_string().len();
+        };
+        if repère.id.to_string().len() > max_size_cid {
+            max_size_cid = repère.id.to_string().len();
+        };
+    }
+    for (index, repère) in repères_found.iter().enumerate() {
+        string_found_repères += format!(
+            "\x1b[92;1m{index:<2$}\x1b[39;22m : \x1b[94;1m{:<3$}\x1b[39;22m (id \x1b[95;1m{:>4$}\x1b[39;22m)\n",
+            repère.name,
+            repère.id,
+            max_size_indexes,
+            max_size_matricule,
+            max_size_cid
+        )
+        .as_str();
+    }
+    println!(
+        "\
+    Repères found :\n\
+    {string_found_repères}\
+    "
+    );
+    loop {
+        print!(
+            "Your choice (\x1b[92;1m0-{number_of_repères}\x1b[39;22m) : ",
+            number_of_repères = repères_found.len() - 1
+        );
+        let mut input: String = String::new();
+        io::stdout().flush().unwrap();
+        io::stdin().read_line(&mut input).unwrap();
+        input = input.trim().to_string();
+        let choice: i16 = input.parse().unwrap_or(-1);
+        let repères_found_len_i16: i16 = repères_found.len() as i16;
+        if (0..repères_found_len_i16).contains(&choice) {
+            break repères_found[choice as usize].clone();
+        };
+        println!(
+            "Please enter a valid choice from \x1b[92;1m0\x1b[22m to \x1b[1m{number_of_repères}\x1b[39;22m",
+            number_of_repères = repères_found.len() - 1
+        );
+    }
 }
 
 #[test]
@@ -88,7 +161,9 @@ fn tests_rn_from_matricule() {
                     "T'.D.S3 - 102a" => 481679,
                     "M\".A.K3L3 - 15-I" => 540629,
                     "FM\" - 3-VIII" => 540745,
-                    _ => panic!("The provided repère name has no associated value in the match expression"),
+                    _ => panic!(
+                        "The provided repère name has no associated value in the match expression"
+                    ),
                 },
                 name: repère.to_string(),
             }]
