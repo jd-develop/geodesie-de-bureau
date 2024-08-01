@@ -23,6 +23,7 @@ import requests
 import json
 from typing_classes import *
 from rn_types import *
+from requests_responses_parser import SearchParser
 import math
 
 RED = "\033[91m"
@@ -50,10 +51,39 @@ def find_rn_dict_from_bbox(bbox_json: list[RNJSON], matricule: str) -> RNJSON:
     raise GeodeticError("Unable to find the Repère de nivellement in the bbox list")
 
 
+def is_valid_index_choice(choice: str, list_len: int):
+    try:
+        return 0 <= int(choice) < list_len
+    except ValueError:
+        return False
+
+
+def find_matricule_to_use_from_list(matricule_input: str, reperes_found: list[tuple[int, str]]):
+    if len(reperes_found) == 1:
+        return reperes_found[0][1]
+    for _, matricule in reperes_found:
+        if matricule == matricule_input:
+            return matricule_input
+    print("Repères found: ")
+    i = 0
+    for i, (cid, matricule) in enumerate(reperes_found):
+        print(f"{i}: {matricule} (id {cid})")
+
+    while not is_valid_index_choice(
+            choix := input(f"Your choice (0-{i}): "),
+            len(reperes_found)
+    ):
+        print(f"Please enter a valid choice from 0 to {i}")
+
+    return reperes_found[int(choix)][1]
+
+
 def print_fiche(rn_json: RNJSON):
     """Affiche toutes les informations sous une forme compréhensible dans la console"""
     prn_json = better_dict(rn_json)
     print(RED + "=============== Repère de nivellement ===============" + RESET)
+    print()
+    print(BLUE + f"Fiche en ligne{RESET} : {prn_json['fiche_url']}")
     print()
     print(BLUE + f"Matricule{RESET} : {prn_json['matricule']}")
     print(BLUE + f"Système altimétrique{RESET} : {prn_json['systeme_altimetrique']}")
@@ -115,44 +145,39 @@ def print_fiche(rn_json: RNJSON):
     # TODO triplets de nivellement
 
 
-def dict_from_matricule(matricule: str) -> RNJSON:
+def dict_from_matricule(matricule_input: str) -> RNJSON:
     """Returns the dict of the Repère de Nivellement from its matricule"""
-    assert len(matricule) != 0
-    assert "|" not in matricule
-    matricule = matricule.replace("’", "'").replace("'", "''").strip()
-    matricule_upper_candidate1 = matricule[:-1].upper() + matricule[-1]
-    matricule_upper_candidate2 = matricule.upper() 
+    assert len(matricule_input) != 0
+    assert "|" not in matricule_input
+    matricule_input = matricule_input.replace("’", "'").strip()
     url = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod"
 
     headers = {"content-type": "application/x-www-form-urlencoded", "Accept-Charset": "UTF-8"}
+    data_search = {"repere_ajax": matricule_input, "identifiant_visugeod": "identificateur_repere"}
 
-    # data = {"repere_ajax": matricule, "identifiant_visugeod": "identificateur_repere"}
-    data = {"h_recherche": f"repere|{matricule}", "t": "france"}
-    data1 = {"h_recherche": f"repere|{matricule_upper_candidate1}", "t": "france"}
-    data2 = {"h_recherche": f"repere|{matricule_upper_candidate2}", "t": "france"}
+    response = requests.post(url, headers=headers, data=data_search)
+    parser = SearchParser()
+    parser.feed(response.text)
+    reperes_found = parser.rn_list
 
-    # GET ALL THE IDs
-    # response = requests.post(url, headers=headers, data=data)
-    # print(response.text)
+    if len(reperes_found) == 0:
+        raise GeodeticError(
+            f"Could not find Repère de Nivellement from matricule {matricule_input}"
+        )
+
+    matricule_to_use = find_matricule_to_use_from_list(matricule_input, reperes_found)
 
     # GET URL OF THE FICHE FROM ID
-    # rnid = input("ID of the Repère de nivellement: ")
     # print(f"https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid={rnid}&geo_cid=0")
 
-    response = requests.post(url, headers=headers, data=data)
+    matricule_with_double_primes = matricule_to_use.replace("'", "''")
+    data_getinfo = {"h_recherche": f"repere|{matricule_with_double_primes}", "t": "france"}
+    response = requests.post(url, headers=headers, data=data_getinfo)
     rn_basic_infos = response.text.split("\n")[0]
-    matricule_used = matricule
     if rn_basic_infos == "1":
-        response1 = requests.post(url, headers=headers, data=data1)
-        rn_basic_infos = response1.text.split("\n")[0]
-        matricule_used = matricule_upper_candidate1
-        if rn_basic_infos == "1":
-            response2 = requests.post(url, headers=headers, data=data2)
-            rn_basic_infos = response2.text.split("\n")[0]
-            matricule_used = matricule_upper_candidate2
-            if rn_basic_infos == "1":
-                raise GeodeticError(f"Could not find Repère de Nivellement from matricule "
-                                    f"{matricule.replace('\'\'', '\'')}")
+        raise GeodeticError(
+            f"Could not find Repère de Nivellement from matricule {matricule_input}"
+        )
 
     dms_coords_raw = rn_basic_infos.split("|")[0].split()
     long, lat = map(limit_dms_coord_for_bbox, dms_coords_raw)
@@ -161,12 +186,14 @@ def dict_from_matricule(matricule: str) -> RNJSON:
     bbox_json_raw = requests.post(bbox_url).text
 
     bbox_json = json.loads(bbox_json_raw)
-    rn_json = find_rn_dict_from_bbox(bbox_json["features"], matricule_used.replace("''", "'"))
+    rn_json = find_rn_dict_from_bbox(bbox_json["features"], matricule_to_use)
     return rn_json
 
 
 def better_dict(rn_json: RNJSON):
     """Returns the useful information contained in the dictionnary"""
+    fiche_url = f"https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid=" \
+                f"{rn_json['properties']['rn_cid']}&geo_cid=0"
     if rn_json["properties"]["nivf_rea_code"] == 2:
         annee_syst_altimetrique = "1969"
     else:
@@ -183,6 +210,8 @@ def better_dict(rn_json: RNJSON):
         type_complement_avec_canex = ""
     return {
         "matricule": rn_json["properties"]["rn_nom"],
+        "cid": rn_json["properties"]["rn_cid"],
+        "fiche_url": fiche_url,
         "systeme_altimetrique": f"NGF-IGN {annee_syst_altimetrique}",
         "altitude": rn_json["properties"]["altitude"],
         "altitude_complementaire": rn_json["properties"]["altitude_complementaire"],
