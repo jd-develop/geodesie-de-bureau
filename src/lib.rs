@@ -70,15 +70,30 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
 
 #[test]
 fn tests_rn_from_matricule() {
-    assert_eq!(
-        rn_from_matricule("M.AC - 0-VIII"),
-        vec![
-            RNIdentificationInfos{
-                id: 303869,
-                name: "M.AC - 0-VIII".to_string(),
-            }
-        ]
-    );
+    for repère in [
+        "M.AC - 0-VIII",
+        "N.P.K3Q3 - 56",
+        "N.P.K3Q3 - 57",
+        "T'.D.S3 - 102a",
+        "M\".A.K3L3 - 15-I",
+        "FM\" - 3-VIII",
+    ] {
+        assert_eq!(
+            rn_from_matricule(repère),
+            vec![RNIdentificationInfos {
+                id: match repère {
+                    "M.AC - 0-VIII" => 303869,
+                    "N.P.K3Q3 - 56" => 266242,
+                    "N.P.K3Q3 - 57" => 364934,
+                    "T'.D.S3 - 102a" => 481679,
+                    "M\".A.K3L3 - 15-I" => 540629,
+                    "FM\" - 3-VIII" => 540745,
+                    _ => panic!("The provided repère name has no associated value in the match expression"),
+                },
+                name: repère.to_string(),
+            }]
+        );
+    }
     assert_eq!(
         rn_from_matricule("T'.D.S3 - 5"),
         vec![
