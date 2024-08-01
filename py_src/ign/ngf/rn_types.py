@@ -21,7 +21,7 @@ RN_TYPE_CODE = {
     "000": "Inconnu",
     "001": "Repère console",
     "007": "Rivet",
-    "008": "Repère Bourdaloë",
+    "008": "Repère Bourdalouë",
     "009": "Repère PLM (Chemins de fer Paris-Lyon-Méditerranée)",
     "010": "Repère MRU (Ministère Reconstruction Urbanisme)",
     "011": "Repère ponts et chaussées",
