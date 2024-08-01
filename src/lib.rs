@@ -71,6 +71,15 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
 #[test]
 fn tests_rn_from_matricule() {
     assert_eq!(
+        rn_from_matricule("M.AC - 0-VIII"),
+        vec![
+            RNIdentificationInfos{
+                id: 0,
+                name: "M.AC - 0-VIII".to_string(),
+            }
+        ]
+    );
+    assert_eq!(
         rn_from_matricule("T'.D.S3 - 5"),
         vec![
             RNIdentificationInfos {
@@ -110,5 +119,5 @@ fn tests_rn_from_matricule() {
                 name: "T'.D.S3 - 5 BIS".to_string(),
             },
         ]
-    )
+    );
 }
