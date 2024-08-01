@@ -21,7 +21,7 @@ RN_TYPE_CODE = {
     "000": "Inconnu",
     "001": "Repère console",
     "007": "Rivet",
-    "008": "Repère Bourdaloë",
+    "008": "Repère Bourdalouë",
     "009": "Repère PLM (Chemins de fer Paris-Lyon-Méditerranée)",
     "010": "Repère MRU (Ministère Reconstruction Urbanisme)",
     "011": "Repère ponts et chaussées",
@@ -65,6 +65,28 @@ RN_ETAT = {
     "P": "Présumé déplacé",
     "S": "Supposé détruit (déposé par un service local)",
     "Y": "Détruit après observation"
+}
+
+H_TYPE_CODE = {
+    2: "Altitude normale",
+    3: "Altitude normale",
+    10: "Altitude orthométrique",
+    11: "Altitude orthométrique",
+    13: "Altitude orthométrique",
+    14: "Altitude orthométrique",
+    15: "Altitude orthométrique",
+    16: "Altitude orthométrique",
+    17: "Altitude orthométrique",
+    18: "Altitude orthométrique",
+    21: "Altitude orthométrique",
+    23: "Altitude orthométrique",
+    26: "Altitude orthométrique",
+    29: "Altitude orthométrique",
+    35: "Altitude orthométrique",
+    37: "Altitude orthométrique",
+    41: "Altitude orthométrique",
+    44: "Altitude orthométrique",
+    169: "Altitude provisoire"
 }
 
 
