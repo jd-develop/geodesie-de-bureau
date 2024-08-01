@@ -2,7 +2,7 @@ mod json_mappings;
 use reqwest;
 
 #[derive(Debug, PartialEq)]
-pub struct TODORenameThisStruct {
+pub struct RNIdentificationInfos {
     pub id: u32,
     pub name: String,
 }
@@ -14,13 +14,13 @@ pub struct TODORenameThisStruct {
 /// use geodesie_de_bureau::*;
 /// assert_eq!(
 ///    rn_from_matricule("T'.D.S3 - 50"),
-///    vec![TODORenameThisStruct {
+///    vec![RNIdentificationInfos {
 ///        id: 452592,
 ///        name: "T'.D.S3 - 50".to_string(),
 ///    }]
 /// );
 /// ```
-pub fn rn_from_matricule(matricule: &str) -> Vec<TODORenameThisStruct> {
+pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
     assert_ne!(matricule, "");
     assert!(!matricule.contains("|"));
     // Let’s own the string, we have a lot to do onto it
@@ -53,10 +53,10 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<TODORenameThisStruct> {
     resp = resp.replace("</b></span></li>", "");
     resp = resp[..resp.find("<!--").unwrap_or(resp.len())].to_string();
     resp = resp.trim().to_string();
-    let mut result_vec: Vec<TODORenameThisStruct> = vec![];
+    let mut result_vec: Vec<RNIdentificationInfos> = vec![];
     for rn in resp.split("\n") {
         let id_and_name: Vec<&str> = rn.split("\x00").into_iter().collect();
-        result_vec.push(TODORenameThisStruct {
+        result_vec.push(RNIdentificationInfos {
             id: id_and_name[0].parse::<u32>().unwrap(),
             name: id_and_name[1].to_string(),
         });
