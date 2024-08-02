@@ -1,14 +1,15 @@
 mod json_mappings;
+use json_mappings::repere::RepèreNivellement;
 use reqwest;
 use std::io::{self, Write};
 
 const SEARCH_RN_URL: &str = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod";
 
-/// What is output from the API call of searching for RNs
+/// This is output from the API call of searching for RNs
 #[derive(Clone, Debug, PartialEq)]
 pub struct RNIdentificationInfos {
-    pub id: u32,
-    pub name: String,
+    pub cid: u32,
+    pub matricule: String,
 }
 
 /// Returns the names and IDs of the benchmarks that contain the provided string
@@ -19,8 +20,8 @@ pub struct RNIdentificationInfos {
 /// assert_eq!(
 ///    rn_from_matricule("T'.D.S3 - 50"),
 ///    vec![RNIdentificationInfos {
-///        id: 452592,
-///        name: "T'.D.S3 - 50".to_string(),
+///        cid: 452592,
+///        matricule: "T'.D.S3 - 50".to_string(),
 ///    }]
 /// );
 /// assert_eq!(
@@ -64,8 +65,8 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
     for rn in resp.split("\n") {
         let id_and_name: Vec<&str> = rn.split("\x00").into_iter().collect();
         result_vec.push(RNIdentificationInfos {
-            id: id_and_name[0].parse::<u32>().unwrap(),
-            name: id_and_name[1].to_string(),
+            cid: id_and_name[0].parse::<u32>().unwrap(),
+            matricule: id_and_name[1].to_string(),
         });
     }
     result_vec
@@ -83,7 +84,7 @@ pub fn find_matricule_to_use_from_list(
     // If there is one repère in the list that matches exactly the provided matricule, we return it directly
     if let Some(repère) = repères_found
         .iter()
-        .find(|infos_repère| infos_repère.name == matricule_input)
+        .find(|infos_repère| infos_repère.matricule == matricule_input)
     {
         return repère.clone();
     }
@@ -96,18 +97,18 @@ pub fn find_matricule_to_use_from_list(
         if index.to_string().len() > max_size_indexes {
             max_size_indexes = index.to_string().len();
         };
-        if repère.name.to_string().len() > max_size_matricule {
-            max_size_matricule = repère.name.to_string().len();
+        if repère.matricule.to_string().len() > max_size_matricule {
+            max_size_matricule = repère.matricule.to_string().len();
         };
-        if repère.id.to_string().len() > max_size_cid {
-            max_size_cid = repère.id.to_string().len();
+        if repère.cid.to_string().len() > max_size_cid {
+            max_size_cid = repère.cid.to_string().len();
         };
     }
     for (index, repère) in repères_found.iter().enumerate() {
         string_found_repères += format!(
             "\x1b[92;1m{index:<2$}\x1b[39;22m : \x1b[94;1m{:<3$}\x1b[39;22m (id \x1b[95;1m{:>4$}\x1b[39;22m)\n",
-            repère.name,
-            repère.id,
+            repère.matricule,
+            repère.cid,
             max_size_indexes,
             max_size_matricule,
             max_size_cid
@@ -122,7 +123,7 @@ pub fn find_matricule_to_use_from_list(
     );
     loop {
         print!(
-            "Your choice (\x1b[92;1m0-{number_of_repères}\x1b[39;22m) : ",
+            "Your choice (\x1b[92;1m0\x1b[22m-\x1b[1m{number_of_repères}\x1b[39;22m) : ",
             number_of_repères = repères_found.len() - 1
         );
         let mut input: String = String::new();
@@ -141,6 +142,36 @@ pub fn find_matricule_to_use_from_list(
     }
 }
 
+/// Takes the identification of a RN as parameter and returns a RepèreNivellement. As simple as that !
+///
+/// # Examples
+/// ```
+///
+/// ```
+pub fn get_rn_from_rn_identifications_infos(rn_id_infos: RNIdentificationInfos) -> RepèreNivellement {
+    let matricule_with_double_primes: String = rn_id_infos.matricule.replace("'", "''");
+    let body: String = format!("h_recherche=repere|{matricule_with_double_primes}&t=france");
+    let mut headers: reqwest::header::HeaderMap = reqwest::header::HeaderMap::new();
+    headers.insert(
+        "content-type",
+        "application/x-www-form-urlencoded".parse().unwrap(),
+    );
+    let client: reqwest::blocking::Client = reqwest::blocking::Client::new();
+    let mut resp: String = client
+        .post(SEARCH_RN_URL)
+        .body(body)
+        .headers(headers)
+        .send()
+        .unwrap()
+        .text()
+        .unwrap();
+    dbg!(&resp);
+    let rn_basic_infos: &str = &resp.split("\n").into_iter().collect::<Vec<&str>>()[0];
+    dbg!(rn_basic_infos);
+    
+    RepèreNivellement{}
+}
+
 #[test]
 fn tests_rn_from_matricule() {
     for repère in [
@@ -154,7 +185,7 @@ fn tests_rn_from_matricule() {
         assert_eq!(
             rn_from_matricule(repère),
             vec![RNIdentificationInfos {
-                id: match repère {
+                cid: match repère {
                     "M.AC - 0-VIII" => 303869,
                     "N.P.K3Q3 - 56" => 266242,
                     "N.P.K3Q3 - 57" => 364934,
@@ -165,7 +196,7 @@ fn tests_rn_from_matricule() {
                         "The provided repère name has no associated value in the match expression"
                     ),
                 },
-                name: repère.to_string(),
+                matricule: repère.to_string(),
             }]
         );
     }
@@ -173,40 +204,40 @@ fn tests_rn_from_matricule() {
         rn_from_matricule("T'.D.S3 - 5"),
         vec![
             RNIdentificationInfos {
-                id: 452592,
-                name: "T'.D.S3 - 50".to_string(),
+                cid: 452592,
+                matricule: "T'.D.S3 - 50".to_string(),
             },
             RNIdentificationInfos {
-                id: 429495,
-                name: "T'.D.S3 - 52".to_string(),
+                cid: 429495,
+                matricule: "T'.D.S3 - 52".to_string(),
             },
             RNIdentificationInfos {
-                id: 108049,
-                name: "T'.D.S3 - 54".to_string(),
+                cid: 108049,
+                matricule: "T'.D.S3 - 54".to_string(),
             },
             RNIdentificationInfos {
-                id: 108050,
-                name: "T'.D.S3 - 55".to_string(),
+                cid: 108050,
+                matricule: "T'.D.S3 - 55".to_string(),
             },
             RNIdentificationInfos {
-                id: 452593,
-                name: "T'.D.S3 - 56".to_string(),
+                cid: 452593,
+                matricule: "T'.D.S3 - 56".to_string(),
             },
             RNIdentificationInfos {
-                id: 338593,
-                name: "T'.D.S3 - 57 BIS".to_string(),
+                cid: 338593,
+                matricule: "T'.D.S3 - 57 BIS".to_string(),
             },
             RNIdentificationInfos {
-                id: 429496,
-                name: "T'.D.S3 - 58".to_string(),
+                cid: 429496,
+                matricule: "T'.D.S3 - 58".to_string(),
             },
             RNIdentificationInfos {
-                id: 521727,
-                name: "T'.D.S3 - 59".to_string(),
+                cid: 521727,
+                matricule: "T'.D.S3 - 59".to_string(),
             },
             RNIdentificationInfos {
-                id: 481574,
-                name: "T'.D.S3 - 5 BIS".to_string(),
+                cid: 481574,
+                matricule: "T'.D.S3 - 5 BIS".to_string(),
             },
         ]
     );
