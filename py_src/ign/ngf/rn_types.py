@@ -100,6 +100,14 @@ def get_etat_colour(full_type: str):
     return f"\033[31m{full_type}\033[0m"
 
 
+def get_gps_exploit(gps_exploit_code: str):
+    match gps_exploit_code:
+        case "E": return "Exploitable directement par GPS"
+        case "R": return "Exploitable par GPS depuis une station excentrée"
+        case "I": return "Inexploitable par GPS"
+        case _: return "Exploitation par GPS inconnue"
+
+
 def get_cote(cote_code: str):
     if cote_code == "G":
         return "Gauche"

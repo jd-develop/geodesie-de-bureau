@@ -142,6 +142,10 @@ def print_fiche(rn_json: RNJSON):
     print(f"|- {BLUE}horizontal{RESET} : {prn_json['reperement_horizontal']}")
     print(f"|- {BLUE}vertical{RESET}   : {prn_json['reperement_vertical']}")
 
+    print()
+    print(RED + "=== Remarques ===" + RESET)
+    print(prn_json["remarques"])
+    print(prn_json["exploitabilite_gps"])
     if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
         print()
         print(RED + str(prn_json["hors_ign"]) + RESET)
@@ -252,7 +256,9 @@ def better_dict(rn_json: RNJSON):
         "reperement_horizontal": rn_json["properties"]["reper_horiz"],
         "reperement_vertical": rn_json["properties"]["reper_vertical"],
 
-        "hors_ign": rn_json["properties"]["hors_ign"]
+        "hors_ign": rn_json["properties"]["hors_ign"],
+        "remarques": rn_json["properties"]["remarque"],
+        "exploitabilite_gps": get_gps_exploit(rn_json["properties"]["rn_gps_eploit_code"])
     }
 
 
