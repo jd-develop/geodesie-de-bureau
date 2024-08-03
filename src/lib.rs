@@ -1,5 +1,8 @@
 mod json_mappings;
-use json_mappings::repere::RepèreNivellement;
+use json_mappings::{
+    bbox::{BBox, Feature, Properties},
+    repere::RepèreNivellement,
+};
 use reqwest;
 use std::io::{self, Write};
 
@@ -148,7 +151,9 @@ pub fn find_matricule_to_use_from_list(
 /// ```
 ///
 /// ```
-pub fn get_rn_from_rn_identifications_infos(rn_id_infos: RNIdentificationInfos) -> RepèreNivellement {
+pub fn get_rn_from_rn_identifications_infos(
+    rn_id_infos: RNIdentificationInfos,
+) -> RepèreNivellement {
     let matricule_with_double_primes: String = rn_id_infos.matricule.replace("'", "''");
     let body: String = format!("h_recherche=repere|{matricule_with_double_primes}&t=france");
     let mut headers: reqwest::header::HeaderMap = reqwest::header::HeaderMap::new();
@@ -156,20 +161,50 @@ pub fn get_rn_from_rn_identifications_infos(rn_id_infos: RNIdentificationInfos) 
         "content-type",
         "application/x-www-form-urlencoded".parse().unwrap(),
     );
-    let client: reqwest::blocking::Client = reqwest::blocking::Client::new();
-    let mut resp: String = client
-        .post(SEARCH_RN_URL)
-        .body(body)
-        .headers(headers)
-        .send()
+    let bbox_data: BBox = serde_json::from_str::<BBox>(
+        reqwest::blocking::Client::new()
+            .post(format!(
+                "https://geodesie.ign.fr/ripgeo/fr/api/nivrn/bbox/{}/json/",
+                reqwest::blocking::Client::new()
+                    .post(SEARCH_RN_URL)
+                    .body(body)
+                    .headers(headers)
+                    .send()
+                    .unwrap()
+                    .text()
+                    .unwrap()
+                    .split("\n")
+                    .into_iter()
+                    .collect::<Vec<&str>>()[0]
+                    .split("|")
+                    .into_iter()
+                    .collect::<Vec<&str>>()[0]
+                    .split(" ")
+                    .into_iter()
+                    .map(|coord| {
+                        format!(
+                            "{:.1}",
+                            (coord.parse::<f64>().unwrap() * 10f64).floor() / 10f64
+                        )
+                    })
+                    .collect::<Vec<String>>()
+                    .join("/")
+            ))
+            .send()
+            .unwrap()
+            .text()
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+    let rn: Feature = bbox_data
+        .features
+        .iter()
+        .find(|feature| feature.properties.rn_nom == rn_id_infos.matricule)
         .unwrap()
-        .text()
-        .unwrap();
-    dbg!(&resp);
-    let rn_basic_infos: &str = &resp.split("\n").into_iter().collect::<Vec<&str>>()[0];
-    dbg!(rn_basic_infos);
-    
-    RepèreNivellement{}
+        .clone();
+
+    RepèreNivellement {}
 }
 
 #[test]
