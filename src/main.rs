@@ -7,5 +7,5 @@ fn main() {
             "T'.D.S3 - 50",
             &ngf::rn_from_matricule("T'.D.S3 - 50"),
         ));
-    println!("{}, {}, {}", rn.commune, rn.matricule, rn.fiche_url)
+    println!("{}", rn);
 }

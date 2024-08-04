@@ -1,5 +1,4 @@
 pub mod json_mappings;
-use json_mappings::bbox;
 pub use json_mappings::{
     bbox::{BBox, Feature, Properties},
     repere::RepèreNivellement,
@@ -212,58 +211,58 @@ pub fn get_rn_from_rn_identifications_infos(
         .unwrap()
         .clone();
     let prop: Properties = rn.properties;
-    // type_complement_avec_canex
+    // type_complément_avec_canex
     let type_complement = prop.rn_type_compl.clone().unwrap_or("".to_string());
     let canex_info = prop.canex_info.clone();
-    let type_complement_avec_canex: String;
+    let type_complément_avec_canex: String;
     if type_complement.is_empty() && canex_info.is_empty() {
-        type_complement_avec_canex = "".to_string()
+        type_complément_avec_canex = "".to_string()
     } else if type_complement.is_empty() {
-        type_complement_avec_canex = canex_info
+        type_complément_avec_canex = canex_info
     } else if canex_info.is_empty() {
-        type_complement_avec_canex = type_complement
+        type_complément_avec_canex = type_complement
     } else {
-        type_complement_avec_canex = type_complement.to_string() + ", " + canex_info.as_str()
+        type_complément_avec_canex = type_complement.to_string() + ", " + canex_info.as_str()
     }
     RepèreNivellement {
         matricule: prop.rn_nom,
         cid: prop.rn_cid,
         fiche_url: format!("https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid={cid}&geo_cid=0", cid= prop.rn_cid),
-        systeme_altimetrique: prop.nivf_rea_code,
+        système_altimétrique: prop.nivf_rea_code,
         altitude: prop.altitude,
-        altitude_complementaire: prop.altitude_complementaire,
+        altitude_complémentaire: prop.altitude_complementaire,
         altitude_type: prop.h_type_code,
-        derniere_observation: prop.rn_obs_date,
+        dernière_observation: prop.rn_obs_date,
         nouveau_calcul: prop.trg_annee,
-        derniere_visite: prop.rn_vis_date,
-        etat: prop.rn_etat_code,
+        dernière_visite: prop.rn_vis_date,
+        état: prop.rn_etat_code,
         rn_type: prop.rn_type_code,
-        type_complement: prop.rn_type_compl,
+        type_complément: prop.rn_type_compl,
         canex_info: prop.canex_info,
-        type_complement_avec_canex,
+        type_complément_avec_canex,
         longitude: rn.geometry.coordinates[0],
         latitude: rn.geometry.coordinates[1],
         e: prop.e,
         n: prop.n,
-        departement: prop.departement_code,
+        département: prop.departement_code,
         insee: prop.insee,
         commune: prop.commune_nom,
         voie_suivie: prop.voie_suivie,
         voie_de: prop.voie_de,
         voie_vers: prop.voie_vers,
-        voie_cote: prop.voie_cote,
+        voie_côté: prop.voie_cote,
         voie_pk: prop.voie_pk,
         distance: prop.distance,
-        du_repere: prop.rn_proche_nom,
+        du_repère: prop.rn_proche_nom,
         localisation: prop.localisation,
         support: prop.support,
         partie_support: prop.support_partie,
-        reperement_horizontal: prop.reper_horiz,
-        reperement_vertical: prop.reper_vertical,
+        repèrement_horizontal: prop.reper_horiz,
+        repèrement_vertical: prop.reper_vertical,
         hors_ign: prop.hors_ign,
         remarques: prop.remarque,
-        exploitabilite_gps: prop.rn_gps_eploit_code,
-        geod_info: prop.geod_info
+        exploitabilité_gps: prop.rn_gps_eploit_code,
+        géod_info: prop.geod_info
     }
 }
 
@@ -336,4 +335,52 @@ fn tests_rn_from_matricule() {
             },
         ]
     );
+}
+#[test]
+fn test_get_rn_from_rn_identifications_infos() {
+    assert_eq!(get_rn_from_rn_identifications_infos(
+        RNIdentificationInfos {
+            cid: 452592,
+            matricule: "T'.D.S3 - 50".to_string(),
+        }
+    ), RepèreNivellement {
+        matricule: "T'.D.S3 - 50".to_string(),
+        cid: 452592,
+        fiche_url: "https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid=452592&geo_cid=0".to_string(),
+        système_altimétrique: json_mappings::bbox::NivfReaCode::NgfIgn1969,
+        altitude: "125,719".to_string(),
+        altitude_complémentaire: "".to_string(),
+        altitude_type: json_mappings::bbox::HTypeCode::AltitudeNormale,
+        dernière_observation: "01/01/1920".to_string(),
+        nouveau_calcul: "1984".to_string(),
+        dernière_visite: "01/01/1920".to_string(),
+        état: json_mappings::bbox::RnÉtatCode::BonÉtat,
+        rn_type: json_mappings::bbox::RnTypeCode::RepèreCylindriqueDuNivellementGénéral,
+        type_complément: Some("".to_string()),
+        canex_info: "".to_string(),
+        type_complément_avec_canex: "".to_string(),
+        longitude: 1.409197,
+        latitude: 43.649276,
+        e: "571.63".to_string(),
+        n: "6284.65".to_string(),
+        département: "31".to_string(),
+        insee: "31555".to_string(),
+        commune: "Toulouse".to_string(),
+        voie_suivie: "GARONNE (LA)".to_string(),
+        voie_de: Some("LE PONT DE GRENADE".to_string()),
+        voie_vers: Some("LE PONT SAINT-MICHEL".to_string()),
+        voie_côté: json_mappings::bbox::VoieCôtéCode::Gauche,
+        voie_pk: Some("120,3".to_string()),
+        distance: None,
+        du_repère: "".to_string(),
+        localisation: Some("AU QUARTIER DE GINESTOUS, SUR UN RUISSEAU DE LA RIVE DROITE DE LA GARONNE".to_string()),
+        support: "PONCEAU".to_string(),
+        partie_support: Some("MUR EN RETOUR COTE FLEUVE, FACE AMONT".to_string()),
+        repèrement_horizontal: Some("A L'AXE".to_string()),
+        repèrement_vertical: Some("".to_string()),
+        hors_ign: "100063".to_string(),
+        remarques: "".to_string(),
+        exploitabilité_gps: json_mappings::bbox::RnGPSExploitCode::Empty,
+        géod_info: "".to_string()
+    })
 }

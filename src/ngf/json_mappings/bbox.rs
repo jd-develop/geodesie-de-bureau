@@ -2,14 +2,14 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct BBox {
     #[serde(rename = "type")]
     pub bbox_type: String,
     pub features: Vec<Feature>,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct Feature {
     #[serde(rename = "type")]
     pub feature_type: FeatureType,
@@ -17,24 +17,24 @@ pub struct Feature {
     pub properties: Properties,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub enum FeatureType {
     Feature,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct Geometry {
     #[serde(rename = "type")]
     pub geometry_type: GeometryType,
     pub coordinates: Vec<f64>,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub enum GeometryType {
     Point,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct Properties {
     pub image_name: String,
     pub rn_type_code: RnTypeCode,
@@ -45,7 +45,7 @@ pub struct Properties {
     pub rn_etat_code: RnÉtatCode,
     pub rn_action_code: RnActionCode,
     pub rn_voie_cote_code: VoieCôtéCode,
-    pub rn_gps_eploit_code: RnGpsEploitCode,
+    pub rn_gps_eploit_code: RnGPSExploitCode,
     pub hors_ign: String,
     pub departement_code: String,
     pub rn_cid: i64,
@@ -85,7 +85,7 @@ pub struct Properties {
     pub sit_info: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum RnTypeCode {
     #[serde(rename = "000")]
@@ -162,20 +162,20 @@ pub enum RnTypeCode {
     RepèreEnFonteTriangulaire,
 }
 
-#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq)]
+#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq, Debug)]
 #[repr(u64)]
 pub enum NivfRefEnCode {
     SystèmeRGF93v1ETRS89ProjectionLAMBERT93 = 702400037010140,
 }
 
-#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq)]
+#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq, Debug)]
 #[repr(u8)]
 pub enum NivfReaCode {
     NgfIgn1969 = 2,
     NgfIgn1978 = 3,
 }
 
-#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq)]
+#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq, Debug)]
 #[repr(u8)]
 pub enum HTypeCode {
     AltitudeNormale = 2 | 3,
@@ -184,7 +184,7 @@ pub enum HTypeCode {
     AltitudeProvisoire = 169,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum RnÉtatCode {
     #[serde(rename = "D")]
@@ -203,7 +203,7 @@ pub enum RnÉtatCode {
     DétruitAprèsObservation,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum RnActionCode {
     #[serde(rename = "D")]
@@ -212,7 +212,7 @@ pub enum RnActionCode {
     Visite,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub enum VoieCôtéCode {
     #[serde(rename = "D")]
     Droit,
@@ -224,9 +224,9 @@ pub enum VoieCôtéCode {
     TheAPIDocumentationIsWrong,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
-pub enum RnGpsEploitCode {
+pub enum RnGPSExploitCode {
     #[serde(rename = "E")]
     ExploitableDirectementParGPS,
     #[serde(rename = "I")]
@@ -237,7 +237,7 @@ pub enum RnGpsEploitCode {
     Empty,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum PtgCroquisLettre {
     B,
