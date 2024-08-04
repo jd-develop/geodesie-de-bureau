@@ -1,5 +1,6 @@
 //! Can serialize / deserialize the output of the « https://geodesie.ign.fr/ripgeo/fr/api/nivrn/bbox/{long}/{lat}/json/ » API call
 use serde::{Deserialize, Serialize};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Serialize, Deserialize)]
 pub struct BBox {
@@ -213,13 +214,12 @@ pub enum RnTypeCode {
     RepèreEnFonteTriangulaire,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize_repr, Deserialize_repr, Clone)]
 #[serde(rename_all = "snake_case")]
+#[repr(u8)]
 pub enum NivfReaCode {
-    #[serde(rename = "2")]
-    NgfIgn1969 = 1969,
-    #[serde(rename = "3")]
-    NgfIgn1978 = 1978,
+    NgfIgn1969 = 2,
+    NgfIgn1978 = 3,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

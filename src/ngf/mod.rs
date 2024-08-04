@@ -161,42 +161,48 @@ pub fn get_rn_from_rn_identifications_infos(
         "content-type",
         "application/x-www-form-urlencoded".parse().unwrap(),
     );
-    let bbox_data: BBox = serde_json::from_str::<BBox>(
-        reqwest::blocking::Client::new()
-            .post(format!(
-                "https://geodesie.ign.fr/ripgeo/fr/api/nivrn/bbox/{}/json/",
-                reqwest::blocking::Client::new()
-                    .post(SEARCH_RN_URL)
-                    .body(body)
-                    .headers(headers)
-                    .send()
-                    .unwrap()
-                    .text()
-                    .unwrap()
-                    .split("\n")
-                    .into_iter()
-                    .collect::<Vec<&str>>()[0]
-                    .split("|")
-                    .into_iter()
-                    .collect::<Vec<&str>>()[0]
-                    .split(" ")
-                    .into_iter()
-                    .map(|coord| {
-                        format!(
-                            "{:.1}",
-                            (coord.parse::<f64>().unwrap() * 10f64).floor() / 10f64
-                        )
-                    })
-                    .collect::<Vec<String>>()
-                    .join("/")
-            ))
-            .send()
-            .unwrap()
-            .text()
-            .unwrap()
-            .as_str(),
-    )
-    .unwrap();
+    let resp = reqwest::blocking::Client::new()
+        .post(format!(
+            "https://geodesie.ign.fr/ripgeo/fr/api/nivrn/bbox/{}/json/",
+            reqwest::blocking::Client::new()
+                .post(SEARCH_RN_URL)
+                .body(body)
+                .headers(headers)
+                .send()
+                .unwrap()
+                .text()
+                .unwrap()
+                .split("\n")
+                .into_iter()
+                .collect::<Vec<&str>>()[0]
+                .split("|")
+                .into_iter()
+                .collect::<Vec<&str>>()[0]
+                .split(" ")
+                .into_iter()
+                .map(|coord| {
+                    format!(
+                        "{:.1}",
+                        (coord.parse::<f64>().unwrap() * 10f64).floor() / 10f64
+                    )
+                })
+                .collect::<Vec<String>>()
+                .join("/")
+        ))
+        .send()
+        .unwrap()
+        .text()
+        .unwrap();
+    if let Err(wrong_col) = serde_json::from_str::<BBox>(resp.as_str()) {
+        let wrong_col = wrong_col.column();
+        println!(
+            "{}\x1b[91;1m{}\x1b[0m{}",
+            resp[wrong_col - 100..wrong_col].to_string(),
+            resp[wrong_col..=wrong_col].to_string(),
+            resp[wrong_col + 1..wrong_col + 100].to_string()
+        );
+    };
+    let bbox_data: BBox = serde_json::from_str::<BBox>(resp.as_str()).unwrap();
     let rn: Feature = bbox_data
         .features
         .iter()
@@ -218,50 +224,44 @@ pub fn get_rn_from_rn_identifications_infos(
         type_complement_avec_canex = type_complement.to_string() + ", " + canex_info.as_str()
     }
     RepèreNivellement {
-    matricule: prop.rn_nom,
-    cid: prop.rn_cid,
-    fiche_url: format!("https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid={cid}&geo_cid=0", cid= prop.rn_cid),
-    systeme_altimetrique: prop.nivf_rea_code,
-    altitude: prop.altitude,
-    altitude_complementaire: prop.altitude_complementaire,
-    altitude_type: prop.h_type_code,
-
-    derniere_observation: prop.rn_obs_date,
-    nouveau_calcul: prop.trg_annee,
-    derniere_visite: prop.rn_vis_date,
-    etat: prop.rn_etat_code,
-
-    rn_type: prop.rn_type_code,
-    type_complement: prop.rn_type_compl,
-    canex_info: prop.canex_info,
-    type_complement_avec_canex,
-
-    longitude: rn.geometry.coordinates[0],
-    latitude: rn.geometry.coordinates[1],
-    e: prop.e,
-    n: prop.n,
-
-    departement: prop.departement_code,
-    insee: prop.insee,
-    commune: prop.commune_nom,
-    voie_suivie: prop.voie_suivie,
-    voie_de: prop.voie_de,
-    voie_vers: prop.voie_vers,
-    voie_cote: prop.voie_cote,
-    voie_pk: prop.voie_pk,
-    distance: prop.distance,
-    du_repere: prop.rn_proche_nom,
-    localisation: prop.localisation,
-
-    support: prop.support,
-    partie_support: prop.support_partie,
-    reperement_horizontal: prop.reper_horiz,
-    reperement_vertical: prop.reper_vertical,
-
-    hors_ign: prop.hors_ign,
+        matricule: prop.rn_nom,
+        cid: prop.rn_cid,
+        fiche_url: format!("https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid={cid}&geo_cid=0", cid= prop.rn_cid),
+        systeme_altimetrique: prop.nivf_rea_code,
+        altitude: prop.altitude,
+        altitude_complementaire: prop.altitude_complementaire,
+        altitude_type: prop.h_type_code,
+        derniere_observation: prop.rn_obs_date,
+        nouveau_calcul: prop.trg_annee,
+        derniere_visite: prop.rn_vis_date,
+        etat: prop.rn_etat_code,
+        rn_type: prop.rn_type_code,
+        type_complement: prop.rn_type_compl,
+        canex_info: prop.canex_info,
+        type_complement_avec_canex,
+        longitude: rn.geometry.coordinates[0],
+        latitude: rn.geometry.coordinates[1],
+        e: prop.e,
+        n: prop.n,
+        departement: prop.departement_code,
+        insee: prop.insee,
+        commune: prop.commune_nom,
+        voie_suivie: prop.voie_suivie,
+        voie_de: prop.voie_de,
+        voie_vers: prop.voie_vers,
+        voie_cote: prop.voie_cote,
+        voie_pk: prop.voie_pk,
+        distance: prop.distance,
+        du_repere: prop.rn_proche_nom,
+        localisation: prop.localisation,
+        support: prop.support,
+        partie_support: prop.support_partie,
+        reperement_horizontal: prop.reper_horiz,
+        reperement_vertical: prop.reper_vertical,
+        hors_ign: prop.hors_ign,
     remarques: prop.remarque,
-    exploitabilite_gps: prop.rn_gps_eploit_code
-}
+        exploitabilite_gps: prop.rn_gps_eploit_code
+    }
 }
 
 #[test]
