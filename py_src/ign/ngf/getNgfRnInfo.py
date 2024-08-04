@@ -99,7 +99,6 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Année de dernière observation{RESET} : {prn_json['derniere_observation']}")
     print(BLUE + f"Année de nouveau calcul{RESET} : {prn_json['nouveau_calcul']}")
     print(BLUE + f"Dernière visite{RESET} : {prn_json['derniere_visite']}")
-    assert isinstance(prn_json["etat"], str)
     print(BLUE + f"État{RESET} : {get_etat_colour(prn_json['etat'])}")
 
     print()
@@ -124,9 +123,12 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Numéro INSEE{RESET} : {prn_json['insee']}")
     print(BLUE + f"Commune{RESET} : {prn_json['commune']}")
     print(BLUE + f"Voie suivie{RESET} : {prn_json['voie_suivie']}")
-    print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
-    print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
-    print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
+    if prn_json["voie_de"] is not None:
+        print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
+    if prn_json["voie_vers"] is not None:
+        print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
+    if prn_json["voie_cote"] is not None:
+        print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
     if prn_json["voie_pk"]:
         print(f"|- {BLUE}PK{RESET}       : {prn_json['voie_pk']} km")
     if prn_json["distance"]:
@@ -136,7 +138,12 @@ def print_fiche(rn_json: RNJSON):
 
     print()
     print(RED + "=== Support === " + RESET)
-    print(BLUE + f"Support{RESET} : {prn_json['support']}")
+    print(BLUE + f"Support{RESET} : {prn_json['support']}", end="")
+    if prn_json["geod_info"] != "":
+        print(f" ({prn_json['geod_info']})")
+    else:
+        print()
+
     print(BLUE + f"Partie du support{RESET} : {prn_json['partie_support']}")
     print(BLUE + f"Repèrements{RESET} :")
     print(f"|- {BLUE}horizontal{RESET} : {prn_json['reperement_horizontal']}")
@@ -145,10 +152,12 @@ def print_fiche(rn_json: RNJSON):
     print()
     print(RED + "=== Remarques ===" + RESET)
     print(prn_json["remarques"])
+
     print(prn_json["exploitabilite_gps"])
+
     if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
-        print()
-        print(RED + str(prn_json["hors_ign"]) + RESET)
+        print(RED + prn_json["hors_ign"] + RESET)
+
     # TODO triplets de nivellement
 
 
@@ -197,14 +206,14 @@ def dict_from_matricule(matricule_to_use: str) -> RNJSON:
     return rn_json
 
 
-def better_dict(rn_json: RNJSON):
+def better_dict(rn_json: RNJSON) -> BetterDict:
     """Returns the useful information contained in the dictionnary"""
     fiche_url = f"https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid=" \
                 f"{rn_json['properties']['rn_cid']}&geo_cid=0"
     if rn_json["properties"]["nivf_rea_code"] == 2:
-        annee_syst_altimetrique = "1969"
+        syst_altimetrique = "NGF-IGN 1969"
     else:
-        annee_syst_altimetrique = "1978"
+        syst_altimetrique = "NGF-IGN 1978"
     type_complement = rn_json["properties"]["rn_type_compl"]
     canex_info = rn_json["properties"]["canex_info"]
     if type_complement and canex_info:
@@ -219,7 +228,7 @@ def better_dict(rn_json: RNJSON):
         "matricule": rn_json["properties"]["rn_nom"],
         "cid": rn_json["properties"]["rn_cid"],
         "fiche_url": fiche_url,
-        "systeme_altimetrique": f"NGF-IGN {annee_syst_altimetrique}",
+        "systeme_altimetrique": syst_altimetrique,
         "altitude": rn_json["properties"]["altitude"],
         "altitude_complementaire": rn_json["properties"]["altitude_complementaire"],
         "altitude_type": H_TYPE_CODE[rn_json["properties"]["h_type_code"]],
@@ -258,7 +267,8 @@ def better_dict(rn_json: RNJSON):
 
         "hors_ign": rn_json["properties"]["hors_ign"],
         "remarques": rn_json["properties"]["remarque"],
-        "exploitabilite_gps": get_gps_exploit(rn_json["properties"]["rn_gps_eploit_code"])
+        "exploitabilite_gps": get_gps_exploit(rn_json["properties"]["rn_gps_eploit_code"]),
+        "geod_info": rn_json["properties"]["geod_info"]
     }
 
 
@@ -277,4 +287,3 @@ if __name__ == "__main__":
     # M".A.K3L3 - 15-I
     # FM" - 3-VIII
     # FM" - 3-V
-

@@ -16,8 +16,10 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+from typing import Literal
+from typing_classes import ETAT_LITERAL, TYPE_LITERAL
 
-RN_TYPE_CODE = {
+RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
     "000": "Inconnu",
     "001": "Repère console",
     "007": "Rivet",
@@ -56,7 +58,7 @@ RN_TYPE_CODE = {
     "040": "Repère en fonte triangulaire"
 }
 
-RN_ETAT = {
+RN_ETAT: dict[str, ETAT_LITERAL] = {
     "D": "Détruit",
     "E": "Bon état",
     "I": "Imprenable",
@@ -67,7 +69,7 @@ RN_ETAT = {
     "Y": "Détruit après observation"
 }
 
-H_TYPE_CODE = {
+H_TYPE_CODE: dict[int, Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]] = {
     2: "Altitude normale",
     3: "Altitude normale",
     10: "Altitude orthométrique",
@@ -90,8 +92,8 @@ H_TYPE_CODE = {
 }
 
 
-def get_rn_type(type_: str):
-    return RN_TYPE_CODE.get(type_, "000")
+def get_rn_type(type_: str) -> TYPE_LITERAL:
+    return RN_TYPE_CODE.get(type_, "Inconnu")
 
 
 def get_etat_colour(full_type: str):
@@ -113,5 +115,7 @@ def get_cote(cote_code: str):
         return "Gauche"
     elif cote_code == "D":
         return "Droit"
-    return "Milieu"
+    elif cote_code == "M":
+        return "Milieu"
+    return None
 
