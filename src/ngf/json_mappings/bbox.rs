@@ -230,4 +230,3 @@ pub enum PtgCroquisLettre {
     #[serde(rename = "")]
     Empty,
 }
-

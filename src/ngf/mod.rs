@@ -1,5 +1,5 @@
-mod json_mappings;
-use json_mappings::{
+pub mod json_mappings;
+pub use json_mappings::{
     bbox::{BBox, Feature, Properties},
     repere::RepèreNivellement,
 };
@@ -203,8 +203,65 @@ pub fn get_rn_from_rn_identifications_infos(
         .find(|feature| feature.properties.rn_nom == rn_id_infos.matricule)
         .unwrap()
         .clone();
-    // TODO Map the Feature struct fields to the RepèreNivellement struct fields
-    RepèreNivellement {}
+    let prop: Properties = rn.properties;
+    // type_complement_avec_canex
+    let type_complement = prop.rn_type_compl.clone().unwrap_or("".to_string());
+    let canex_info = prop.canex_info.clone();
+    let type_complement_avec_canex: String;
+    if type_complement.is_empty() && canex_info.is_empty() {
+        type_complement_avec_canex = "".to_string()
+    } else if type_complement.is_empty() {
+        type_complement_avec_canex = canex_info
+    } else if canex_info.is_empty() {
+        type_complement_avec_canex = type_complement
+    } else {
+        type_complement_avec_canex = type_complement.to_string() + ", " + canex_info.as_str()
+    }
+    RepèreNivellement {
+    matricule: prop.rn_nom,
+    cid: prop.rn_cid,
+    fiche_url: format!("https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid={cid}&geo_cid=0", cid= prop.rn_cid),
+    systeme_altimetrique: prop.nivf_rea_code,
+    altitude: prop.altitude,
+    altitude_complementaire: prop.altitude_complementaire,
+    altitude_type: prop.h_type_code,
+
+    derniere_observation: prop.rn_obs_date,
+    nouveau_calcul: prop.trg_annee,
+    derniere_visite: prop.rn_vis_date,
+    etat: prop.rn_etat_code,
+
+    rn_type: prop.rn_type_code,
+    type_complement: prop.rn_type_compl,
+    canex_info: prop.canex_info,
+    type_complement_avec_canex,
+
+    longitude: rn.geometry.coordinates[0],
+    latitude: rn.geometry.coordinates[1],
+    e: prop.e,
+    n: prop.n,
+
+    departement: prop.departement_code,
+    insee: prop.insee,
+    commune: prop.commune_nom,
+    voie_suivie: prop.voie_suivie,
+    voie_de: prop.voie_de,
+    voie_vers: prop.voie_vers,
+    voie_cote: prop.voie_cote,
+    voie_pk: prop.voie_pk,
+    distance: prop.distance,
+    du_repere: prop.rn_proche_nom,
+    localisation: prop.localisation,
+
+    support: prop.support,
+    partie_support: prop.support_partie,
+    reperement_horizontal: prop.reper_horiz,
+    reperement_vertical: prop.reper_vertical,
+
+    hors_ign: prop.hors_ign,
+    remarques: prop.remarque,
+    exploitabilite_gps: prop.rn_gps_eploit_code
+}
 }
 
 #[test]
