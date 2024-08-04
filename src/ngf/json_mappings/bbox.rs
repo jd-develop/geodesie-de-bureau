@@ -66,7 +66,7 @@ pub struct Properties {
     pub lambda_dms: String,
     pub phi_dms: String,
     pub support: String,
-    pub support_partie: String,
+    pub support_partie: Option<String>,
     pub reper_horiz: Option<String>,
     pub reper_vertical: Option<String>,
     pub altitude: String,
@@ -230,7 +230,4 @@ pub enum PtgCroquisLettre {
     #[serde(rename = "")]
     Empty,
 }
-
-
-
 
