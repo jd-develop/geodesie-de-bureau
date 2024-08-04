@@ -203,7 +203,7 @@ pub fn get_rn_from_rn_identifications_infos(
         .find(|feature| feature.properties.rn_nom == rn_id_infos.matricule)
         .unwrap()
         .clone();
-
+    // TODO Map the Feature struct fields to the RepèreNivellement struct fields
     RepèreNivellement {}
 }
 
