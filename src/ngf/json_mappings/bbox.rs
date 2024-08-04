@@ -2,14 +2,14 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct BBox {
     #[serde(rename = "type")]
     pub bbox_type: String,
     pub features: Vec<Feature>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Feature {
     #[serde(rename = "type")]
     pub feature_type: FeatureType,
@@ -17,31 +17,31 @@ pub struct Feature {
     pub properties: Properties,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub enum FeatureType {
     Feature,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Geometry {
     #[serde(rename = "type")]
     pub geometry_type: GeometryType,
     pub coordinates: Vec<f64>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub enum GeometryType {
     Point,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Properties {
     pub image_name: String,
     pub rn_type_code: RnTypeCode,
-    pub nivf_ref_en_code: i64,
+    pub nivf_ref_en_code: NivfRefEnCode,
     pub nivf_rea_code: NivfReaCode,
     pub nivf_ref_lp_code: i64,
-    pub h_type_code: i64,
+    pub h_type_code: HTypeCode,
     pub rn_etat_code: RnÉtatCode,
     pub rn_action_code: RnActionCode,
     pub rn_voie_cote_code: VoieCôtéCode,
@@ -85,59 +85,7 @@ pub struct Properties {
     pub sit_info: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "snake_case")]
-pub enum RnÉtatCode {
-    #[serde(rename = "D")]
-    Détruit,
-    #[serde(rename = "E")]
-    BonÉtat,
-    #[serde(rename = "I")]
-    Imprenable,
-    #[serde(rename = "M")]
-    MauvaisÉtat,
-    #[serde(rename = "N")]
-    NonRetrouvé,
-    #[serde(rename = "P")]
-    PresuméDéplacé,
-    #[serde(rename = "Y")]
-    DétruitAprèsObservation,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "snake_case")]
-pub enum RnActionCode {
-    #[serde(rename = "D")]
-    Détermination,
-    #[serde(rename = "V")]
-    Visite,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub enum VoieCôtéCode {
-    #[serde(rename = "D")]
-    Droit,
-    #[serde(rename = "G")]
-    Gauche,
-    #[serde(rename = "M")]
-    Milieu,
-    V,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "snake_case")]
-pub enum RnGpsEploitCode {
-    #[serde(rename = "E")]
-    ExploitableDirectementParGPS,
-    #[serde(rename = "I")]
-    InexploitableParGPS,
-    #[serde(rename = "R")]
-    ExploitableParGPSDepuisUneStationExcentrée,
-    #[serde(rename = "N")]
-    Empty,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum RnTypeCode {
     #[serde(rename = "000")]
@@ -214,15 +162,82 @@ pub enum RnTypeCode {
     RepèreEnFonteTriangulaire,
 }
 
-#[derive(Serialize_repr, Deserialize_repr, Clone)]
-#[serde(rename_all = "snake_case")]
+#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq)]
+#[repr(u64)]
+pub enum NivfRefEnCode {
+    SystèmeRGF93v1ETRS89ProjectionLAMBERT93 = 702400037010140,
+}
+
+#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq)]
 #[repr(u8)]
 pub enum NivfReaCode {
     NgfIgn1969 = 2,
     NgfIgn1978 = 3,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq)]
+#[repr(u8)]
+pub enum HTypeCode {
+    AltitudeNormale = 2 | 3,
+    AltitudeOrthométrique =
+        10 | 11 | 13 | 14 | 15 | 16 | 17 | 18 | 21 | 23 | 26 | 29 | 35 | 37 | 41 | 44,
+    AltitudeProvisoire = 169,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RnÉtatCode {
+    #[serde(rename = "D")]
+    Détruit,
+    #[serde(rename = "E")]
+    BonÉtat,
+    #[serde(rename = "I")]
+    Imprenable,
+    #[serde(rename = "M")]
+    MauvaisÉtat,
+    #[serde(rename = "N")]
+    NonRetrouvé,
+    #[serde(rename = "P")]
+    PresuméDéplacé,
+    #[serde(rename = "Y")]
+    DétruitAprèsObservation,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RnActionCode {
+    #[serde(rename = "D")]
+    Détermination,
+    #[serde(rename = "V")]
+    Visite,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+pub enum VoieCôtéCode {
+    #[serde(rename = "D")]
+    Droit,
+    #[serde(rename = "G")]
+    Gauche,
+    #[serde(rename = "M")]
+    Milieu,
+    #[serde(rename = "V")]
+    TheAPIDocumentationIsWrong,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RnGpsEploitCode {
+    #[serde(rename = "E")]
+    ExploitableDirectementParGPS,
+    #[serde(rename = "I")]
+    InexploitableParGPS,
+    #[serde(rename = "R")]
+    ExploitableParGPSDepuisUneStationExcentrée,
+    #[serde(rename = "N")]
+    Empty,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PtgCroquisLettre {
     B,

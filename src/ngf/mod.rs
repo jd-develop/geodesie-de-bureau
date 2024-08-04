@@ -1,4 +1,5 @@
 pub mod json_mappings;
+use json_mappings::bbox;
 pub use json_mappings::{
     bbox::{BBox, Feature, Properties},
     repere::RepèreNivellement,
@@ -193,6 +194,7 @@ pub fn get_rn_from_rn_identifications_infos(
         .unwrap()
         .text()
         .unwrap();
+    // To debug issues related to deserialization (this deserialization fails very often)
     if let Err(wrong_col) = serde_json::from_str::<BBox>(resp.as_str()) {
         let wrong_col = wrong_col.column();
         println!(
@@ -259,8 +261,9 @@ pub fn get_rn_from_rn_identifications_infos(
         reperement_horizontal: prop.reper_horiz,
         reperement_vertical: prop.reper_vertical,
         hors_ign: prop.hors_ign,
-    remarques: prop.remarque,
-        exploitabilite_gps: prop.rn_gps_eploit_code
+        remarques: prop.remarque,
+        exploitabilite_gps: prop.rn_gps_eploit_code,
+        geod_info: prop.geod_info
     }
 }
 

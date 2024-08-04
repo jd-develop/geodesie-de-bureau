@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use super::bbox::*;
+use serde::{Deserialize, Serialize};
 
 // TODO Implement std::fmt::Display and std::fmt::Debug traits properly
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct RepèreNivellement {
     pub matricule: String,
     pub cid: i64,
@@ -10,7 +10,7 @@ pub struct RepèreNivellement {
     pub systeme_altimetrique: NivfReaCode,
     pub altitude: String,
     pub altitude_complementaire: String,
-    pub altitude_type: i64,
+    pub altitude_type: HTypeCode,
 
     pub derniere_observation: String,
     pub nouveau_calcul: String,
@@ -47,4 +47,5 @@ pub struct RepèreNivellement {
     pub hors_ign: String,
     pub remarques: String,
     pub exploitabilite_gps: RnGpsEploitCode,
+    pub geod_info: String,
 }
