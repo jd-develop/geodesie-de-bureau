@@ -156,7 +156,7 @@ def print_fiche(rn_json: RNJSON):
     print(prn_json["exploitabilite_gps"])
 
     if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
-        print()
+        print(RED + prn_json["hors_ign"] + RESET)
 
     # TODO triplets de nivellement
 
