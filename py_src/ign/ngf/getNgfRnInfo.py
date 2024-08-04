@@ -136,7 +136,12 @@ def print_fiche(rn_json: RNJSON):
 
     print()
     print(RED + "=== Support === " + RESET)
-    print(BLUE + f"Support{RESET} : {prn_json['support']}")
+    print(BLUE + f"Support{RESET} : {prn_json['support']}", end="")
+    if prn_json["geod_info"] != "":
+        print(f" ({prn_json['geod_info']})")
+    else:
+        print()
+
     print(BLUE + f"Partie du support{RESET} : {prn_json['partie_support']}")
     print(BLUE + f"Repèrements{RESET} :")
     print(f"|- {BLUE}horizontal{RESET} : {prn_json['reperement_horizontal']}")
@@ -145,10 +150,12 @@ def print_fiche(rn_json: RNJSON):
     print()
     print(RED + "=== Remarques ===" + RESET)
     print(prn_json["remarques"])
+
     print(prn_json["exploitabilite_gps"])
+
     if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
         print()
-        print(RED + str(prn_json["hors_ign"]) + RESET)
+
     # TODO triplets de nivellement
 
 
@@ -258,7 +265,8 @@ def better_dict(rn_json: RNJSON):
 
         "hors_ign": rn_json["properties"]["hors_ign"],
         "remarques": rn_json["properties"]["remarque"],
-        "exploitabilite_gps": get_gps_exploit(rn_json["properties"]["rn_gps_eploit_code"])
+        "exploitabilite_gps": get_gps_exploit(rn_json["properties"]["rn_gps_eploit_code"]),
+        "geod_info": rn_json["properties"]["geod_info"]
     }
 
 
