@@ -101,6 +101,7 @@ impl Display for RepèreNivellement {
             {repèrement_horizontal}\
             {repèrement_vertical}\
             {remarques}\
+            {hors_ign}\
             ",
             fiche_url = self.fiche_url,
             matricule = self.matricule,
@@ -285,6 +286,11 @@ impl Display for RepèreNivellement {
                     }
                 }
             },
+            hors_ign = if ["100001", "100063", ""].contains(&self.hors_ign.as_str()) {
+                "".to_string()
+            } else {
+                format!("\x1b[91m{hors_ign}\x1b[39m\n", hors_ign = self.hors_ign)
+            }
         )?;
         Ok(())
     }
