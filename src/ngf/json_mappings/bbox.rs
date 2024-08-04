@@ -114,7 +114,6 @@ pub enum RnActionCode {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "snake_case")]
 pub enum VoieCôtéCode {
     #[serde(rename = "D")]
     Droit,
@@ -122,6 +121,7 @@ pub enum VoieCôtéCode {
     Gauche,
     #[serde(rename = "M")]
     Milieu,
+    V,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
