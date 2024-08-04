@@ -115,5 +115,7 @@ def get_cote(cote_code: str):
         return "Gauche"
     elif cote_code == "D":
         return "Droit"
-    return "Milieu"
+    elif cote_code == "M":
+        return "Milieu"
+    return None
 

@@ -99,7 +99,6 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Année de dernière observation{RESET} : {prn_json['derniere_observation']}")
     print(BLUE + f"Année de nouveau calcul{RESET} : {prn_json['nouveau_calcul']}")
     print(BLUE + f"Dernière visite{RESET} : {prn_json['derniere_visite']}")
-    assert isinstance(prn_json["etat"], str)
     print(BLUE + f"État{RESET} : {get_etat_colour(prn_json['etat'])}")
 
     print()
@@ -124,9 +123,12 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Numéro INSEE{RESET} : {prn_json['insee']}")
     print(BLUE + f"Commune{RESET} : {prn_json['commune']}")
     print(BLUE + f"Voie suivie{RESET} : {prn_json['voie_suivie']}")
-    print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
-    print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
-    print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
+    if prn_json["voie_de"] is not None:
+        print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
+    if prn_json["voie_vers"] is not None:
+        print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
+    if prn_json["voie_cote"] is not None:
+        print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
     if prn_json["voie_pk"]:
         print(f"|- {BLUE}PK{RESET}       : {prn_json['voie_pk']} km")
     if prn_json["distance"]:
@@ -154,7 +156,7 @@ def print_fiche(rn_json: RNJSON):
     print(prn_json["exploitabilite_gps"])
 
     if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
-        print()
+        print(RED + prn_json["hors_ign"] + RESET)
 
     # TODO triplets de nivellement
 
