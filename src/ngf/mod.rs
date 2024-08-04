@@ -19,7 +19,7 @@ pub struct RNIdentificationInfos {
 ///
 /// # Examples
 /// ```
-/// use geodesie_de_bureau::*;
+/// use geodesie_de_bureau::ngf::*;
 /// assert_eq!(
 ///    rn_from_matricule("T'.D.S3 - 50"),
 ///    vec![RNIdentificationInfos {
