@@ -69,6 +69,100 @@ class RNPropertiesJSON(TypedDict):
     sit_info: str
 
 
+ETAT_LITERAL = Literal[
+    "Détruit", "Bon état", "Imprenable", "Mauvais état", "Non retrouvé", "Présumé déplacé",
+    "Supposé détruit (déposé par un service local)", "Détruit après observation"
+]
+
+TYPE_LITERAL = Literal[
+    "Inconnu",
+    "Repère console",
+    "Rivet",
+    "Repère Bourdalouë",
+    "Repère PLM (Chemins de fer Paris-Lyon-Méditerranée)",
+    "Repère MRU (Ministère Reconstruction Urbanisme)",
+    "Repère ponts et chaussées",
+    "Repère navigation",
+    "Repère ville de Paris",
+    "Repère cylindrique du Nivellement Général",
+    "Repère local",
+    "Repère hexagonal",
+    "Repère local, repère dans un système local",
+    "Échelle hydrométrique",
+    "Repère boule",
+    "Repère italien",
+    "Repère de crue",
+    "Repère octogonal",
+    "Repère construction",
+    "Repère EDF",
+    "Repère SNCF",
+    "Repère cadastre",
+    "Repère allemand",
+    "Repère belge",
+    "Repère luxembourgeois",
+    "Repère suisse",
+    "Repère espagnol",
+    "Repère ville de Marseille",
+    "Traie de crue",
+    "Borne",
+    "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
+    "Repère fondamental",
+    "Tube",
+    "Repère IPG (Institut de Physique du Globe)",
+    "Repère conique",
+    "Repère en fonte triangulaire"
+]
+
+
+class BetterDict(TypedDict):
+    matricule: str
+    cid: int
+    fiche_url: str
+    systeme_altimetrique: Literal["NGF-IGN 1969", "NGF-IGN 1978"]
+    altitude: str
+    altitude_complementaire: str
+    altitude_type: Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]
+    derniere_observation: str
+    nouveau_calcul: str
+    derniere_visite: str
+    etat: ETAT_LITERAL
+    type: TYPE_LITERAL
+    type_complement: str
+    canex_info: str
+    type_complement_avec_canex: str
+
+    longitude: float
+    latitude: float
+    e: str
+    n: str
+
+    departement: str
+    insee: str
+    commune: str
+    voie_suivie: str
+    voie_de: str
+    voie_vers: str
+    voie_cote: str
+    voie_pk: str | None
+    distance: str | None
+    du_repere: str | None
+    localisation: str
+    support: str
+    partie_support: str
+    reperement_horizontal: str
+    reperement_vertical: str
+
+    hors_ign: str
+    remarques: str
+    exploitabilite_gps: Literal[
+        "Exploitable directement par GPS",
+        "Exploitable par GPS depuis une station excentrée",
+        "Inexploitable par GPS",
+        "Exploitation par GPS inconnue"
+    ]
+    geod_info: str
+
+
 class RNGeometryJSON(TypedDict):
     type: Literal["Point"]
     coordinates: tuple[float, float]

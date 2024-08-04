@@ -204,14 +204,14 @@ def dict_from_matricule(matricule_to_use: str) -> RNJSON:
     return rn_json
 
 
-def better_dict(rn_json: RNJSON):
+def better_dict(rn_json: RNJSON) -> BetterDict:
     """Returns the useful information contained in the dictionnary"""
     fiche_url = f"https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid=" \
                 f"{rn_json['properties']['rn_cid']}&geo_cid=0"
     if rn_json["properties"]["nivf_rea_code"] == 2:
-        annee_syst_altimetrique = "1969"
+        syst_altimetrique = "NGF-IGN 1969"
     else:
-        annee_syst_altimetrique = "1978"
+        syst_altimetrique = "NGF-IGN 1978"
     type_complement = rn_json["properties"]["rn_type_compl"]
     canex_info = rn_json["properties"]["canex_info"]
     if type_complement and canex_info:
@@ -226,7 +226,7 @@ def better_dict(rn_json: RNJSON):
         "matricule": rn_json["properties"]["rn_nom"],
         "cid": rn_json["properties"]["rn_cid"],
         "fiche_url": fiche_url,
-        "systeme_altimetrique": f"NGF-IGN {annee_syst_altimetrique}",
+        "systeme_altimetrique": syst_altimetrique,
         "altitude": rn_json["properties"]["altitude"],
         "altitude_complementaire": rn_json["properties"]["altitude_complementaire"],
         "altitude_type": H_TYPE_CODE[rn_json["properties"]["h_type_code"]],
