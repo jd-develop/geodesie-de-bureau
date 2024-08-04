@@ -40,8 +40,8 @@ class RNPropertiesJSON(TypedDict):
     localisation: str
     carte_no: str
     voie_suivie: str
-    voie_de: str
-    voie_vers: str
+    voie_de: str | None
+    voie_vers: str | None
     voie_cote: str
     voie_pk: str | None
     distance: str | None
@@ -140,9 +140,9 @@ class BetterDict(TypedDict):
     insee: str
     commune: str
     voie_suivie: str
-    voie_de: str
-    voie_vers: str
-    voie_cote: str
+    voie_de: str | None
+    voie_vers: str | None
+    voie_cote: str | None
     voie_pk: str | None
     distance: str | None
     du_repere: str | None

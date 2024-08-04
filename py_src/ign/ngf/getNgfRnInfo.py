@@ -123,9 +123,12 @@ def print_fiche(rn_json: RNJSON):
     print(BLUE + f"Numéro INSEE{RESET} : {prn_json['insee']}")
     print(BLUE + f"Commune{RESET} : {prn_json['commune']}")
     print(BLUE + f"Voie suivie{RESET} : {prn_json['voie_suivie']}")
-    print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
-    print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
-    print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
+    if prn_json["voie_de"] is not None:
+        print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
+    if prn_json["voie_vers"] is not None:
+        print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
+    if prn_json["voie_cote"] is not None:
+        print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
     if prn_json["voie_pk"]:
         print(f"|- {BLUE}PK{RESET}       : {prn_json['voie_pk']} km")
     if prn_json["distance"]:
