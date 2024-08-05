@@ -71,7 +71,7 @@ impl Display for RepèreNivellement {
             \x1b[94mÉtat\x1b[39m : {état}\n\
             \n\
             \x1b[91m=== Type ===\x1b[39m\n\
-            \x1b[94mType\x1b[39m : {rn_type:?}\n\
+            \x1b[94mType\x1b[39m : {rn_type}\n\
             {type_complément_avec_canex}\
             \n\
             \x1b[91m=== Coordonnées DMS ===\x1b[39m\n\

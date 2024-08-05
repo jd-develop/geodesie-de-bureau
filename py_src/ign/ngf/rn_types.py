@@ -24,7 +24,7 @@ RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
     "001": "Repère console",
     "007": "Rivet",
     "008": "Repère Bourdalouë",
-    "009": "Repère PLM (Chemins de fer Paris-Lyon-Méditerranée)",
+    "009": "Repère PLM (Chemin de fer Paris-Lyon-Méditerranée)",
     "010": "Repère MRU (Ministère Reconstruction Urbanisme)",
     "011": "Repère ponts et chaussées",
     "012": "Repère navigation",

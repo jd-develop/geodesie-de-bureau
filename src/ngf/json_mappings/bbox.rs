@@ -1,6 +1,7 @@
 //! Can serialize / deserialize the output of the « https://geodesie.ign.fr/ripgeo/fr/api/nivrn/bbox/{long}/{lat}/json/ » API call
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
+use std::fmt;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct BBox {
@@ -160,6 +161,53 @@ pub enum RnTypeCode {
     RepèreConique,
     #[serde(rename = "040")]
     RepèreEnFonteTriangulaire,
+}
+
+impl fmt::Display for RnTypeCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}", match self {
+                RnTypeCode::Inconnu => "Inconnu",
+                RnTypeCode::RepèreConsole => "Repère console",
+                RnTypeCode::Rivet => "Rivet",
+                RnTypeCode::RepèreBourdalouë => "Repère Bourdalouë",
+                RnTypeCode::RepèrePLMCheminDeFerParisLyonMéditerranée => "Repère PLM (Chemin de fer Paris Lyon Méditerranée)",
+                RnTypeCode::RepèreMRUMinistèreReconstructionUrbanisme => "Repère MRU (Ministère Reconstruction Urbanisme)",
+                RnTypeCode::RepèrePontsEtChaussées => "Repèse ponts et chaussées",
+                RnTypeCode::RepèreNavigation => "Repère navigation",
+                RnTypeCode::RepèreVilleDeParis => "Repèse ville de Paris",
+                RnTypeCode::RepèreCylindriqueDuNivellementGénéral => "Repère cylindrique du Nivellement Général",
+                RnTypeCode::RepèreLocal => "Repère local",
+                RnTypeCode::RepèreHexagonal => "Repère hexagonal",
+                RnTypeCode::RepèreLocalRepèreDansUnSystèmeLocal => "Repère local, repère dans un système local",
+                RnTypeCode::ÉchelleHydrométrique => "Échelle hydrométrique",
+                RnTypeCode::RepèreBoule => "Repère boule",
+                RnTypeCode::RepèreItalien => "Repère italien",
+                RnTypeCode::RepèreDeCrue => "Repère de crue",
+                RnTypeCode::RepèreOctogonal => "Repère octogonal",
+                RnTypeCode::RepèreReconstruction => "Repère reconstruction",
+                RnTypeCode::RepèreEDF => "Repère EDF",
+                RnTypeCode::RepèreSNCF => "Repère SNCF",
+                RnTypeCode::RepèreCadastre => "Repère cadastre",
+                RnTypeCode::RepèreAllemand => "Repère allemand",
+                RnTypeCode::RepèreBelge => "Repère belge",
+                RnTypeCode::RepèreLuxembourgeois => "Repère luxembourgeois",
+                RnTypeCode::RepèreSuisse => "Repère suisse",
+                RnTypeCode::RepèreEspagnol => "Repère espagnol",
+                RnTypeCode::RepèreVilleDeMarseille => "Repère ville de Marseille",
+                RnTypeCode::TraitDeCrue => "Trait de crue",
+                RnTypeCode::Borne => "Borne",
+                RnTypeCode::RepèreSHOMServiceHydrographiqueEtOcéanographiqueDeLaMarine
+                    => "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
+                RnTypeCode::RepèreFondamental => "Repère fondamental",
+                RnTypeCode::Tube => "Tube",
+                RnTypeCode::RepèreIPGInstitutDePhysiqueDuGlobe => "Repère IPG (Institut de Physique du Globe)",
+                RnTypeCode::RepèreConique => "Repère conique",
+                RnTypeCode::RepèreEnFonteTriangulaire => "Repère en fonte triangulaire",
+            }
+        )
+    }
 }
 
 #[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq, Debug)]

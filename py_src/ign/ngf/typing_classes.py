@@ -79,7 +79,7 @@ TYPE_LITERAL = Literal[
     "Repère console",
     "Rivet",
     "Repère Bourdalouë",
-    "Repère PLM (Chemins de fer Paris-Lyon-Méditerranée)",
+    "Repère PLM (Chemin de fer Paris-Lyon-Méditerranée)",
     "Repère MRU (Ministère Reconstruction Urbanisme)",
     "Repère ponts et chaussées",
     "Repère navigation",
