@@ -194,7 +194,7 @@ impl Display for RepèreNivellement {
                 format!(
                     "\
                     \x1b[94mDistance\x1b[39m : {distance}km\n\
-                    └╴ \x1b[94mdu repère\x1b[39m : {du_repère}\n
+                    └╴ \x1b[94mdu repère\x1b[39m : {du_repère}\n\
                     ",
                     du_repère = self.du_repère
                 )
