@@ -4,7 +4,7 @@ pub use json_mappings::{
     repere::RepèreNivellement,
 };
 use reqwest;
-use std::io::{self, Write};
+use std::{io::{self, Write}, process::exit};
 
 const SEARCH_RN_URL: &str = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod";
 
@@ -83,6 +83,10 @@ pub fn find_matricule_to_use_from_list(
     // If there is only one repère in the list. we return it directly
     if repères_found.len() == 1 {
         return repères_found[0].clone();
+    }
+    // If there are no repères in the list. we can call exit(1)
+    if repères_found.len() == 0 {
+        exit(1);
     }
     // If there is one repère in the list that matches exactly the provided matricule, we return it directly
     if let Some(repère) = repères_found
