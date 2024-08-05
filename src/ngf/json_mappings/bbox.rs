@@ -216,11 +216,28 @@ pub enum NivfRefEnCode {
     SystèmeRGF93v1ETRS89ProjectionLAMBERT93 = 702400037010140,
 }
 
+impl fmt::Display for NivfRefEnCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Système : RGF93 v1 (ETRS89) - Projection : LAMBERT-93")
+    }
+}
+
 #[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq, Debug)]
 #[repr(u8)]
 pub enum NivfReaCode {
     NgfIgn1969 = 2,
     NgfIgn1978 = 3,
+}
+
+impl fmt::Display for NivfReaCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+            match self {
+                NivfReaCode::NgfIgn1969 => "NGF-IGN 1969",
+                NivfReaCode::NgfIgn1978 => "NGF-IGN 1978"
+            }
+        )
+    }
 }
 
 #[derive(Serialize_repr, Deserialize_repr, Clone, PartialEq, Debug)]
@@ -230,6 +247,18 @@ pub enum HTypeCode {
     AltitudeOrthométrique =
         10 | 11 | 13 | 14 | 15 | 16 | 17 | 18 | 21 | 23 | 26 | 29 | 35 | 37 | 41 | 44,
     AltitudeProvisoire = 169,
+}
+
+impl fmt::Display for HTypeCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+            match self {
+                HTypeCode::AltitudeNormale => "Altitude normale",
+                HTypeCode::AltitudeOrthométrique => "Altitude orthométrique",
+                HTypeCode::AltitudeProvisoire => "Altitude provisoire"
+            }
+        )
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -251,6 +280,22 @@ pub enum RnÉtatCode {
     DétruitAprèsObservation,
 }
 
+impl fmt::Display for RnÉtatCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+            match self {
+                RnÉtatCode::Détruit => "Détruit",
+                RnÉtatCode::BonÉtat => "Bon état",
+                RnÉtatCode::Imprenable => "Imprenable",
+                RnÉtatCode::MauvaisÉtat => "Mauvais état",
+                RnÉtatCode::NonRetrouvé => "Non retrouvé",
+                RnÉtatCode::PresuméDéplacé => "Présumé déplacé",
+                RnÉtatCode::DétruitAprèsObservation => "Détruit après observation"
+            }
+        )
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum RnActionCode {
@@ -258,6 +303,17 @@ pub enum RnActionCode {
     Détermination,
     #[serde(rename = "V")]
     Visite,
+}
+
+impl fmt::Display for RnActionCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+            match self {
+                RnActionCode::Visite => "Visite",
+                RnActionCode::Détermination => "Détermination"
+            }
+        )
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -270,6 +326,19 @@ pub enum VoieCôtéCode {
     Milieu,
     #[serde(rename = "V")]
     TheAPIDocumentationIsWrong,
+}
+
+impl fmt::Display for VoieCôtéCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+            match self {
+                VoieCôtéCode::Droit => "Droit",
+                VoieCôtéCode::Gauche => "Gauche",
+                VoieCôtéCode::Milieu => "Milieu",
+                VoieCôtéCode::TheAPIDocumentationIsWrong => "The API documentation is wrong!"
+            }
+        )
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -285,6 +354,23 @@ pub enum RnGPSExploitCode {
     Empty,
 }
 
+impl fmt::Display for RnGPSExploitCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+            match self {
+                RnGPSExploitCode::ExploitableDirectementParGPS
+                    => "Exploitable directement par GPS",
+                RnGPSExploitCode::InexploitableParGPS
+                    => "Inexploitable par GPS",
+                RnGPSExploitCode::ExploitableParGPSDepuisUneStationExcentrée
+                    => "Exploitable par GPS depuis une station excentrée",
+                _ => ""
+            }
+        )
+    }
+}
+
+// not documented
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum PtgCroquisLettre {

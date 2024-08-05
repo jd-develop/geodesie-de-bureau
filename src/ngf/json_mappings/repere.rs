@@ -60,8 +60,8 @@ impl Display for RepèreNivellement {
             \x1b[94mFiche en ligne\x1b[39m : {fiche_url}\n\
             \n\
             \x1b[94mMatricule\x1b[39m : {matricule}\n\
-            \x1b[94mSystème altimétrique\x1b[39m : {système_altimétrique:?}\n\
-            \x1b[94mAltitude\x1b[39m : {altitude}m ({altitude_type:?})\n\
+            \x1b[94mSystème altimétrique\x1b[39m : {système_altimétrique}\n\
+            \x1b[94mAltitude\x1b[39m : {altitude}m ({altitude_type})\n\
             {altitude_complémentaire}\
             \n\
             \x1b[91m=== Dernière visite et observation ===\x1b[39m\n\
@@ -174,7 +174,7 @@ impl Display for RepèreNivellement {
             },
             voie_côté = if self.voie_côté != VoieCôtéCode::TheAPIDocumentationIsWrong {
                 format!(
-                    "{first_chars} \x1b[94mcôté\x1b[39m : {voie_côté:?}\n",
+                    "{first_chars} \x1b[94mcôté\x1b[39m : {voie_côté}\n",
                     first_chars = if self.voie_pk.is_some() {
                         "├╴"
                     } else {
@@ -257,7 +257,7 @@ impl Display for RepèreNivellement {
                     format!(
                         "\n\
                         \x1b[91m=== Remarques ===\x1b[39m\n\
-                        \x1b[94mExploitabilité GPS\x1b[39m : {exploitabilité_gps:?}\n\
+                        \x1b[94mExploitabilité GPS\x1b[39m : {exploitabilité_gps}\n\
                         \n\
                         ",
                         exploitabilité_gps = self.exploitabilité_gps
@@ -277,7 +277,7 @@ impl Display for RepèreNivellement {
                             "\n\
                             \x1b[91m=== Remarques ===\x1b[39m\n\
                             \x1b[94mRemarques\x1b[39m : {remarques}\n\
-                            \x1b[94mExploitabilité GPS\x1b[39m : {exploitabilité_gps:?}\n\
+                            \x1b[94mExploitabilité GPS\x1b[39m : {exploitabilité_gps}\n\
                             \n\
                             ",
                             remarques = self.remarques,
