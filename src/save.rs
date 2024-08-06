@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::{result::Result, string::String, fs};
 use shellexpand;
+use std::{error::Error, fs, result::Result, string::String};
 
 use crate::ngf;
 
@@ -47,10 +47,10 @@ fn determine_config_directory() -> Result<String, String> {
 }
 
 /// This function writes the data in the save argument on the disk
-fn write_store(save: SaveJSON) -> Result<(), ()> {
-    let config_dir_path = determine_config_directory().unwrap();
-    fs::create_dir_all(config_dir_path);
-    todo!();
+fn write_store(save: &SaveJSON) -> Result<(), Box<dyn Error>> {
+    let config_dir_path = determine_config_directory()?;
+    fs::create_dir_all(&config_dir_path)?;
+    fs::write(config_dir_path + "/save.json", serde_json::to_string(save)?)?;
     Ok(())
 }
 
