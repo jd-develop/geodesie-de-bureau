@@ -167,20 +167,25 @@ impl fmt::Display for RnTypeCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}", match self {
+            "{}",
+            match self {
                 RnTypeCode::Inconnu => "Inconnu",
                 RnTypeCode::RepèreConsole => "Repère console",
                 RnTypeCode::Rivet => "Rivet",
                 RnTypeCode::RepèreBourdalouë => "Repère Bourdalouë",
-                RnTypeCode::RepèrePLMCheminDeFerParisLyonMéditerranée => "Repère PLM (Chemin de fer Paris Lyon Méditerranée)",
-                RnTypeCode::RepèreMRUMinistèreReconstructionUrbanisme => "Repère MRU (Ministère Reconstruction Urbanisme)",
+                RnTypeCode::RepèrePLMCheminDeFerParisLyonMéditerranée =>
+                    "Repère PLM (Chemin de fer Paris Lyon Méditerranée)",
+                RnTypeCode::RepèreMRUMinistèreReconstructionUrbanisme =>
+                    "Repère MRU (Ministère Reconstruction Urbanisme)",
                 RnTypeCode::RepèrePontsEtChaussées => "Repèse ponts et chaussées",
                 RnTypeCode::RepèreNavigation => "Repère navigation",
                 RnTypeCode::RepèreVilleDeParis => "Repèse ville de Paris",
-                RnTypeCode::RepèreCylindriqueDuNivellementGénéral => "Repère cylindrique du Nivellement Général",
+                RnTypeCode::RepèreCylindriqueDuNivellementGénéral =>
+                    "Repère cylindrique du Nivellement Général",
                 RnTypeCode::RepèreLocal => "Repère local",
                 RnTypeCode::RepèreHexagonal => "Repère hexagonal",
-                RnTypeCode::RepèreLocalRepèreDansUnSystèmeLocal => "Repère local, repère dans un système local",
+                RnTypeCode::RepèreLocalRepèreDansUnSystèmeLocal =>
+                    "Repère local, repère dans un système local",
                 RnTypeCode::ÉchelleHydrométrique => "Échelle hydrométrique",
                 RnTypeCode::RepèreBoule => "Repère boule",
                 RnTypeCode::RepèreItalien => "Repère italien",
@@ -198,11 +203,12 @@ impl fmt::Display for RnTypeCode {
                 RnTypeCode::RepèreVilleDeMarseille => "Repère ville de Marseille",
                 RnTypeCode::TraitDeCrue => "Trait de crue",
                 RnTypeCode::Borne => "Borne",
-                RnTypeCode::RepèreSHOMServiceHydrographiqueEtOcéanographiqueDeLaMarine
-                    => "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
+                RnTypeCode::RepèreSHOMServiceHydrographiqueEtOcéanographiqueDeLaMarine =>
+                    "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
                 RnTypeCode::RepèreFondamental => "Repère fondamental",
                 RnTypeCode::Tube => "Tube",
-                RnTypeCode::RepèreIPGInstitutDePhysiqueDuGlobe => "Repère IPG (Institut de Physique du Globe)",
+                RnTypeCode::RepèreIPGInstitutDePhysiqueDuGlobe =>
+                    "Repère IPG (Institut de Physique du Globe)",
                 RnTypeCode::RepèreConique => "Repère conique",
                 RnTypeCode::RepèreEnFonteTriangulaire => "Repère en fonte triangulaire",
             }
@@ -231,10 +237,12 @@ pub enum NivfReaCode {
 
 impl fmt::Display for NivfReaCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
                 NivfReaCode::NgfIgn1969 => "NGF-IGN 1969",
-                NivfReaCode::NgfIgn1978 => "NGF-IGN 1978"
+                NivfReaCode::NgfIgn1978 => "NGF-IGN 1978",
             }
         )
     }
@@ -251,11 +259,13 @@ pub enum HTypeCode {
 
 impl fmt::Display for HTypeCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
                 HTypeCode::AltitudeNormale => "Altitude normale",
                 HTypeCode::AltitudeOrthométrique => "Altitude orthométrique",
-                HTypeCode::AltitudeProvisoire => "Altitude provisoire"
+                HTypeCode::AltitudeProvisoire => "Altitude provisoire",
             }
         )
     }
@@ -282,7 +292,9 @@ pub enum RnÉtatCode {
 
 impl fmt::Display for RnÉtatCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
                 RnÉtatCode::Détruit => "Détruit",
                 RnÉtatCode::BonÉtat => "Bon état",
@@ -290,7 +302,7 @@ impl fmt::Display for RnÉtatCode {
                 RnÉtatCode::MauvaisÉtat => "Mauvais état",
                 RnÉtatCode::NonRetrouvé => "Non retrouvé",
                 RnÉtatCode::PresuméDéplacé => "Présumé déplacé",
-                RnÉtatCode::DétruitAprèsObservation => "Détruit après observation"
+                RnÉtatCode::DétruitAprèsObservation => "Détruit après observation",
             }
         )
     }
@@ -307,10 +319,12 @@ pub enum RnActionCode {
 
 impl fmt::Display for RnActionCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
                 RnActionCode::Visite => "Visite",
-                RnActionCode::Détermination => "Détermination"
+                RnActionCode::Détermination => "Détermination",
             }
         )
     }
@@ -330,12 +344,14 @@ pub enum VoieCôtéCode {
 
 impl fmt::Display for VoieCôtéCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
                 VoieCôtéCode::Droit => "Droit",
                 VoieCôtéCode::Gauche => "Gauche",
                 VoieCôtéCode::Milieu => "Milieu",
-                VoieCôtéCode::TheAPIDocumentationIsWrong => "The API documentation is wrong!"
+                VoieCôtéCode::TheAPIDocumentationIsWrong => "The API documentation is wrong!",
             }
         )
     }
@@ -356,15 +372,15 @@ pub enum RnGPSExploitCode {
 
 impl fmt::Display for RnGPSExploitCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
-                RnGPSExploitCode::ExploitableDirectementParGPS
-                    => "Exploitable directement par GPS",
-                RnGPSExploitCode::InexploitableParGPS
-                    => "Inexploitable par GPS",
-                RnGPSExploitCode::ExploitableParGPSDepuisUneStationExcentrée
-                    => "Exploitable par GPS depuis une station excentrée",
-                _ => ""
+                RnGPSExploitCode::ExploitableDirectementParGPS => "Exploitable directement par GPS",
+                RnGPSExploitCode::InexploitableParGPS => "Inexploitable par GPS",
+                RnGPSExploitCode::ExploitableParGPSDepuisUneStationExcentrée =>
+                    "Exploitable par GPS depuis une station excentrée",
+                _ => "",
             }
         )
     }

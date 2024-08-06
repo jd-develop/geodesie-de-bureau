@@ -4,7 +4,10 @@ pub use json_mappings::{
     repere::RepèreNivellement,
 };
 use reqwest;
-use std::{io::{self, Write}, process::exit};
+use std::{
+    io::{self, Write},
+    process::exit,
+};
 
 const SEARCH_RN_URL: &str = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod";
 
@@ -153,7 +156,60 @@ pub fn find_matricule_to_use_from_list(
 ///
 /// # Examples
 /// ```
-///
+/// use geodesie_de_bureau::ngf::{
+///     get_rn_from_rn_identifications_infos,
+///     json_mappings::bbox::*,
+///     RepèreNivellement,
+///     RNIdentificationInfos,
+/// };
+/// assert_eq!(
+///     get_rn_from_rn_identifications_infos(
+///         RNIdentificationInfos{
+///             matricule: "T'.D.S3 - 50".to_string(),
+///             cid: 452592
+///         }
+///     ),
+///     RepèreNivellement {
+///         matricule: "T'.D.S3 - 50".to_string(),
+///         cid: 452592,
+///         fiche_url: "https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid=452592&geo_cid=0".to_string(),
+///         système_altimétrique: NivfReaCode::NgfIgn1969,
+///         altitude: "125,719".to_string(),
+///         altitude_complémentaire: "".to_string(),
+///         altitude_type: HTypeCode::AltitudeNormale,
+///         dernière_observation: "01/01/1920".to_string(),
+///         nouveau_calcul: "1984".to_string(),
+///         dernière_visite: "01/01/1920".to_string(),
+///         état: RnÉtatCode::BonÉtat,
+///         rn_type: RnTypeCode::RepèreCylindriqueDuNivellementGénéral,
+///         type_complément: Some("".to_string()),
+///         canex_info: "".to_string(),
+///         type_complément_avec_canex: "".to_string(),
+///         longitude: 1.409197,
+///         latitude: 43.649276,
+///         e: "571.63".to_string(),
+///         n: "6284.65".to_string(),
+///         département: "31".to_string(),
+///         insee: "31555".to_string(),
+///         commune: "Toulouse".to_string(),
+///         voie_suivie: "GARONNE (LA)".to_string(),
+///         voie_de: Some("LE PONT DE GRENADE".to_string()),
+///         voie_vers: Some("LE PONT SAINT-MICHEL".to_string()),
+///         voie_côté: VoieCôtéCode::Gauche,
+///         voie_pk: Some("120,3".to_string()),
+///         distance: None,
+///         du_repère: "".to_string(),
+///         localisation: Some("AU QUARTIER DE GINESTOUS, SUR UN RUISSEAU DE LA RIVE DROITE DE LA GARONNE".to_string()),
+///         support: "PONCEAU".to_string(),
+///         partie_support: Some("MUR EN RETOUR COTE FLEUVE, FACE AMONT".to_string()),
+///         repèrement_horizontal: Some("A L'AXE".to_string()),
+///         repèrement_vertical: Some("".to_string()),
+///         hors_ign: "100063".to_string(),
+///         remarques: "".to_string(),
+///         exploitabilité_gps: RnGPSExploitCode::Empty,
+///         géod_info: "".to_string()
+///     }
+/// )
 /// ```
 pub fn get_rn_from_rn_identifications_infos(
     rn_id_infos: RNIdentificationInfos,
