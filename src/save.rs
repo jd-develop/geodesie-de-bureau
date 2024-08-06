@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::ngf;
+
 /// This struct should be able to serialize and deserialize a JSON save
 #[derive(Serialize, Deserialize)]
 struct SaveJSON {
@@ -13,14 +15,8 @@ struct Options {}
 
 #[derive(Serialize, Deserialize)]
 enum Objet {
-    NGF(ObjetNGF),
+    NGF(ngf::json_mappings::repere::RepèreNivellement),
     Autre(),
-}
-
-#[derive(Serialize, Deserialize)]
-struct ObjetNGF {
-    matricule: String,
-    id: u32,
 }
 
 #[derive(Serialize, Deserialize)]
