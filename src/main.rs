@@ -18,7 +18,7 @@ fn main() {
                 rn_matricule,
                 &ngf::rn_from_matricule(rn_matricule),
             ));
-        println!("{:?}", rn);
+        println!("{}", rn);
     } else {
         println!("Please specify a matricule")
     }
