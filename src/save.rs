@@ -55,6 +55,10 @@ fn write_store(save: &SaveJSON) -> Result<(), Box<dyn Error>> {
 }
 
 /// This function reads the data on the disk and returns a SaveJSON
-fn read_store() -> SaveJSON {
-    todo!();
+fn read_store() -> Result<SaveJSON, Box<dyn Error>> {
+    let config_dir_path = determine_config_directory()?;
+    fs::create_dir_all(&config_dir_path)?; // Just to avoid some errors ;)
+    let read_to_string: Result<String, std::io::Error> = fs::read_to_string(config_dir_path + "/save.json");
+    let from_str: Result<SaveJSON, serde_json::Error> = serde_json::from_str::<SaveJSON>(read_to_string?.as_str());
+    Ok(from_str?)
 }
