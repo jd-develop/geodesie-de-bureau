@@ -78,9 +78,9 @@ impl Display for RepèreNivellement {
             \x1b[94mLongitude (dms)\x1b[39m : {longitude}\n\
             \x1b[94mLatitude (dms)\x1b[39m : {latitude}\n\
             \n\
-            \x1b[91m=== Coordonnées en mètres ===\x1b[39m\n\
-            \x1b[94mE (m)\x1b[39m : {e}\n\
-            \x1b[94mN (m)\x1b[39m : {n}\n\
+            \x1b[91m=== Coordonnées en kilomètres ===\x1b[39m\n\
+            \x1b[94mE (km)\x1b[39m : {e}\n\
+            \x1b[94mN (km)\x1b[39m : {n}\n\
             \n\
             \x1b[91m=== Localisation ===\x1b[39m\n\
             \x1b[94mDépartement\x1b[39m : {département}\n\
