@@ -112,10 +112,10 @@ def print_fiche(rn_json: RNJSON):
     # print("Système : RGF93 v1 (ETRS89) - Ellipsoïde : IAG GRS 1980")
     print(BLUE + f"Longitude (dms){RESET} : {prn_json['longitude']}")
     print(BLUE + f"Latitude (dms){RESET} : {prn_json['latitude']}")
-    print(RED + "=== Coordonnées en mètres ===" + RESET)
+    print(RED + "=== Coordonnées en kilomètres ===" + RESET)
     # print("Système : RGF93 v1 (ETRS89) - Projection : LAMBERT-93")
-    print(BLUE + f"E (m){RESET} : {prn_json['e']}")
-    print(BLUE + f"N (m){RESET} : {prn_json['n']}")
+    print(BLUE + f"E (km){RESET} : {prn_json['e']}")
+    print(BLUE + f"N (km){RESET} : {prn_json['n']}")
 
     print()
     print(RED + "=== Localisation ===" + RESET)
