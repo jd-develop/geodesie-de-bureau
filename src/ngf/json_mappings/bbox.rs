@@ -82,7 +82,7 @@ pub struct Properties {
     pub canex_info: String,
     pub rn_primordial_cid: Option<i64>,
     pub sit_no: Option<String>,
-    pub ptg_croquis_lettre: PtgCroquisLettre,
+    pub ptg_croquis_lettre: String,
     pub sit_info: String,
 }
 
@@ -387,11 +387,11 @@ impl fmt::Display for RnGPSExploitCode {
 }
 
 // not documented
-#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
-#[serde(rename_all = "snake_case")]
-pub enum PtgCroquisLettre {
-    B,
-    E,
-    #[serde(rename = "")]
-    Empty,
-}
+// #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
+// #[serde(rename_all = "snake_case")]
+// pub enum PtgCroquisLettre {
+//    B,
+//    E,
+//    #[serde(rename = "")]
+//    Empty,
+// }
