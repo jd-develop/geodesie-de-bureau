@@ -3,6 +3,8 @@ use geodesie_de_bureau::*;
 use ngf::*;
 
 fn main() {
+    // let _ = cli_interface::cli_interface::main();
+
     let matches: clap::ArgMatches = command!()
         .arg(
             arg!(

@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 clap = { "version" = "4.5.13", "features" = ["cargo"] }
+ratatui = "0.28.0"
 reqwest = { version = "0.12.5", features = ["blocking", "json"] }
 serde = { version = "1.0.204", features = ["derive"] }
 serde_json = "1.0.122"
