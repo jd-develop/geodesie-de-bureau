@@ -71,7 +71,7 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
     for rn in resp.split("\n") {
         let id_and_name: Vec<&str> = rn.split("\x00").into_iter().collect();
         result_vec.push(RNIdentificationInfos {
-            cid: id_and_name[0].parse::<u32>().unwrap(),
+            cid: id_and_name[0].parse::<u32>().unwrap_or_else(|_| panic!("Invalid CID : « {} »", id_and_name[0])),
             matricule: id_and_name[1].to_string(),
         });
     }
