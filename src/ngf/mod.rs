@@ -243,7 +243,7 @@ pub fn get_rn_from_rn_identifications_infos(
                 .map(|coord| {
                     format!(
                         "{:.1}",
-                        (coord.parse::<f64>().unwrap() * 10f64).floor() / 10f64
+                        (coord.parse::<f64>().unwrap_or_else(|_| panic!("Invalid cast to f64 : « {coord} »")) * 10f64).floor() / 10f64
                     )
                 })
                 .collect::<Vec<String>>()
