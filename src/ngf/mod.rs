@@ -55,6 +55,8 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
         .headers(headers)
         .send()
         .unwrap()
+        .error_for_status()
+        .unwrap()
         .text()
         .unwrap();
     if resp.contains("Pas de résultat") {
@@ -71,7 +73,9 @@ pub fn rn_from_matricule(matricule: &str) -> Vec<RNIdentificationInfos> {
     for rn in resp.split("\n") {
         let id_and_name: Vec<&str> = rn.split("\x00").into_iter().collect();
         result_vec.push(RNIdentificationInfos {
-            cid: id_and_name[0].parse::<u32>().unwrap_or_else(|_| panic!("Invalid CID : « {} »", id_and_name[0])),
+            cid: id_and_name[0]
+                .parse::<u32>()
+                .unwrap_or_else(|_| panic!("Invalid CID : « {} »", id_and_name[0])),
             matricule: id_and_name[1].to_string(),
         });
     }
@@ -230,6 +234,8 @@ pub fn get_rn_from_rn_identifications_infos(
                 .headers(headers)
                 .send()
                 .unwrap()
+                .error_for_status()
+                .unwrap()
                 .text()
                 .unwrap()
                 .split("\n")
@@ -243,13 +249,20 @@ pub fn get_rn_from_rn_identifications_infos(
                 .map(|coord| {
                     format!(
                         "{:.1}",
-                        (coord.parse::<f64>().unwrap_or_else(|_| panic!("Invalid cast to f64 : « {coord} »")) * 10f64).floor() / 10f64
+                        (coord
+                            .parse::<f64>()
+                            .unwrap_or_else(|_| panic!("Invalid cast to f64 : « {coord} »"))
+                            * 10f64)
+                            .floor()
+                            / 10f64
                     )
                 })
                 .collect::<Vec<String>>()
                 .join("/")
         ))
         .send()
+        .unwrap()
+        .error_for_status()
         .unwrap()
         .text()
         .unwrap();
