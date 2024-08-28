@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """getNgfRnInfo.py - Gets the informations about a Repère de nivellement
-                     (NGF, i.e. metropolitan France including Corsica)
+                     (NGF-nivf, i.e. metropolitan France including Corsica)
 """
 import requests
 import json
@@ -25,15 +25,29 @@ from typing_classes import *
 from rn_types import *
 from requests_responses_parser import SearchParser
 import math
+from pprint import pprint
 
 RED = "\033[91m"
 GREEN = "\033[92m"
 BLUE = "\033[94m"
 RESET = "\033[00m"
 
-URL = "https://geodesie.ign.fr/fiches/index.php?module=e&action=visugeod"
-HEADERS = {"content-type": "application/x-www-form-urlencoded", "Accept-Charset": "UTF-8"}
+URL = "https://data.geopf.fr/wfs"
 
+def get_params_from_matricule(matricule: str) -> dict[str, str]:
+    return {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAME": "GEODESIE:data_geod",
+        "OUTPUTFORMAT": "application/json",
+        "cql_filter": f"nom='{matricule}' and domaine='nivf'"
+    }
+
+response = requests.get(URL, params=get_params_from_matricule("T''.D.S3 - 17"))
+pprint(response.json())
+
+exit()
 
 def limit_dms_coord_for_bbox(dms_coord: str):
     """2.1749 -> 2.1, 48.8039 -> 48.8, -5.0914 -> -5.1"""
