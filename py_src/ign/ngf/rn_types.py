@@ -20,45 +20,51 @@ from typing import Literal
 from typing_classes import ETAT_LITERAL, TYPE_LITERAL
 
 RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
-    "000": "Inconnu",
-    "001": "Repère console",
-    "007": "Rivet",
-    "008": "Repère Bourdalouë",
-    "009": "Repère PLM (Chemin de fer Paris-Lyon-Méditerranée)",
-    "010": "Repère MRU (Ministère Reconstruction Urbanisme)",
-    "011": "Repère ponts et chaussées",
-    "012": "Repère navigation",
-    "013": "Repère ville de Paris",
-    "014": "Repère cylindrique du Nivellement Général",
-    "015": "Repère local",
-    "016": "Repère hexagonal",
-    "017": "Repère local, repère dans un système local",
-    "018": "Échelle hydrométrique",
-    "019": "Repère boule",
-    "020": "Repère italien",
-    "021": "Repère de crue",
-    "022": "Repère octogonal",
-    "023": "Repère construction",
-    "024": "Repère EDF",
-    "025": "Repère SNCF",
-    "026": "Repère cadastre",
-    "027": "Repère allemand",
-    "028": "Repère belge",
-    "029": "Repère luxembourgeois",
-    "030": "Repère suisse",
-    "031": "Repère espagnol",
-    "032": "Repère ville de Marseille",
-    "033": "Traie de crue",
-    "034": "Borne",
-    "035": "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
-    "036": "Repère fondamental",
-    "037": "Tube",
-    "038": "Repère IPG (Institut de Physique du Globe)",
-    "039": "Repère conique",
-    "040": "Repère en fonte triangulaire"
+    "INCONNU": "Inconnu",
+    "C   REPERE CONSOLE": "Repère console",
+    "R   RIVET": "Rivet",
+    "B   REPERE BOURDALOUE": "Repère Bourdalouë",
+    "REPERE PLM (CHEMIN DE FER PARIS-LYON-MEDITERRANEE)":
+        "Repère PLM (Chemin de fer Paris-Lyon-Méditerranée)",
+    "REPERE MRU (MINISTERE RECONSTRUCTION URBANISME)":
+        "Repère MRU (Ministère Reconstruction Urbanisme)",
+    "REPERE PONTS ET CHAUSSEES": "Repère ponts et chaussées",
+    "REPERE NAVIGATION": "Repère navigation",
+    "REPERE VILLE DE PARIS": "Repère ville de Paris",
+    "M   REPERE CYLINDRIQUE DU NIVELLEMENT GENERAL":
+        "Repère cylindrique du Nivellement Général",
+    "REPERE LOCAL": "Repère local",
+    "REPERE HEXAGONAL": "Repère hexagonal",
+    "REPERE LOCAL             REPERE DANS UN SYSTEME LOCAL":
+        "Repère local, repère dans un système local",
+    "ECHELLE HYDROMETRIQUE": "Échelle hydrométrique",
+    "REPERE BOULE": "Repère boule",
+    "REPERE ITALIEN": "Repère italien",
+    "REPERE DE CRUE": "Repère de crue",
+    "REPERE OCTOGONAL": "Repère octogonal",
+    "REPERE CONSTRUCTION": "Repère construction",
+    "REPERE EDF": "Repère EDF",
+    "REPERE SNCF": "Repère SNCF",
+    "REPERE CADASTRE": "Repère cadastre",
+    "REPERE ALLEMAND": "Repère allemand",
+    "REPERE BELGE": "Repère belge",
+    "REPERE LUXEMBOURGEOIS": "Repère luxembourgeois",
+    "REPERE SUISSE": "Repère suisse",
+    "REPERE ESPAGNOL": "Repère espagnol",
+    "REPERE VILLE DE MARSEILLE": "Repère ville de Marseille",
+    "TRAIT DE CRUE": "Trait de crue",
+    "BORNE": "Borne",
+    "REPERE SHOM (SERVICE HYDROGRAPHIQUE ET OCEANOGRAPHIQUE DE LA MARINE)":
+        "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
+    "REPERE FONDAMENTAL": "Repère fondamental",
+    "TUBE": "Tube",
+    "REPERE IPG (INSTITUT DE PHYSIQUE DU GLOBE)":
+        "Repère IPG (Institut de Physique du Globe)",
+    "REPERE CONIQUE": "Repère conique",
+    "REPERE EN FONTE TRIANGULAIRE": "Repère en fonte triangulaire"
 }
 
-RN_ETAT: dict[str, ETAT_LITERAL] = {
+RN_ETAT: dict[str, ETAT_LITERAL] = {  # TODO: réécrire ce dict
     "D": "Détruit",
     "E": "Bon état",
     "I": "Imprenable",
@@ -69,26 +75,10 @@ RN_ETAT: dict[str, ETAT_LITERAL] = {
     "Y": "Détruit après observation"
 }
 
-H_TYPE_CODE: dict[int, Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]] = {
-    2: "Altitude normale",
-    3: "Altitude normale",
-    10: "Altitude orthométrique",
-    11: "Altitude orthométrique",
-    13: "Altitude orthométrique",
-    14: "Altitude orthométrique",
-    15: "Altitude orthométrique",
-    16: "Altitude orthométrique",
-    17: "Altitude orthométrique",
-    18: "Altitude orthométrique",
-    21: "Altitude orthométrique",
-    23: "Altitude orthométrique",
-    26: "Altitude orthométrique",
-    29: "Altitude orthométrique",
-    35: "Altitude orthométrique",
-    37: "Altitude orthométrique",
-    41: "Altitude orthométrique",
-    44: "Altitude orthométrique",
-    169: "Altitude provisoire"
+H_TYPE_CODE: dict[str, Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]] = {
+    "ALTITUDE NORMALE": "Altitude normale",
+    "ALTITUDE ORTHOMETRIQUE": "Altitude orthométrique",
+    "ALTITUDE PROVISOIRE": "Altitude provisoire"
 }
 
 
@@ -103,19 +93,13 @@ def get_etat_colour(full_type: str):
 
 
 def get_gps_exploit(gps_exploit_code: str):
-    match gps_exploit_code:
-        case "E": return "Exploitable directement par GPS"
-        case "R": return "Exploitable par GPS depuis une station excentrée"
-        case "I": return "Inexploitable par GPS"
-        case _: return "Exploitation par GPS inconnue"
-
-
-def get_cote(cote_code: str):
-    if cote_code == "G":
-        return "Gauche"
-    elif cote_code == "D":
-        return "Droit"
-    elif cote_code == "M":
-        return "Milieu"
-    return None
+    match gps_exploit_code.split():
+        case ["EXPLOITABLE", "DIRECTEMENT", "PAR", _]:
+            return "Exploitable directement par GNSS"
+        case ["EXPLOITABLE", "PAR", _, "DEPUIS", "UNE", "STATION", "EXCENTREE"]:
+            return "Exploitable par GNSS depuis une station excentrée"
+        case ["INEXPLOITABLE", "PAR", _]:
+            return "Inexploitable par GNSS"
+        case _:
+            return "Exploitation par GNSS inconnue"
 

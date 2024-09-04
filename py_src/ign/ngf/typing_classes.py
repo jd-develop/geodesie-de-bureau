@@ -20,53 +20,146 @@ from typing import TypedDict, Literal
 
 
 class RNPropertiesJSON(TypedDict):
-    image_name: str
-    rn_type_code: str
-    nivf_ref_en_code: int
-    nivf_rea_code: int
-    nivf_ref_lp_code: int
-    h_type_code: int
-    rn_etat_code: str
-    rn_action_code: str
-    rn_voie_cote_code: str
-    rn_gps_eploit_code: str
-    hors_ign: str
-    departement_code: str
-    rn_cid: int
-    rn_nom: str
-    rn_type_compl: str
-    insee: str
-    commune_nom: str
-    localisation: str
-    carte_no: str
-    voie_suivie: str
-    voie_de: str | None
-    voie_vers: str | None
-    voie_cote: str
-    voie_pk: str | None
-    distance: str | None
-    rn_proche_nom: str | None
-    e: str
-    n: str
-    lambda_dms: str
-    phi_dms: str
-    support: str
-    support_partie: str
-    reper_horiz: str
-    reper_vertical: str
-    altitude: str
-    altitude_complementaire: str
-    trg_annee: str
-    rn_obs_date: str
-    rn_vis_date: str
+    id: str
+    domaine: Literal["nivf", "nivo"]
+    nom: str  # matricule
+    no: str
+
+    type: str
+    type_info: str  # complément
     remarque: str
-    triplet_cid: str 
-    geod_info: str
-    canex_info: str
-    rn_primordial_cid: ...
-    sit_no: ...
-    ptg_croquis_lettre: str
-    sit_info: str
+
+    diffusion: bool
+    maj_date: str
+    commune: str
+    insee: str
+    entite: str  # département en général (précisé dans entite_nature)
+    entite_no: str
+    entite_nature: str
+
+    localisation: str
+    carte: str  # nom de la carte IGN sur laquelle le RN est présent
+    carte_no: str
+
+    voie_suivie: str
+    voie_de: str
+    voie_vers: str
+    voie_cote: str
+    voie_pk: float
+
+    etat: str
+    action: Literal["VISITE", "DETERMINATION"]
+    action_date: str
+    vis_date: str
+    obs_date: str
+    obs_org: str
+    expl_gps: str
+
+    cg1_coord1: float
+    cg1_coord2: float
+    cg1_coord3: float | None
+    cg1_srt: str
+    cg1_prec: str | None  # UNSURE
+    cg1_date: str | None  # UNSURE
+
+    cp1_coord1: int
+    cp1_coord2: int
+    cp1_srt: str
+    cp1_prec: str | None  # UNSURE
+    cp1_coord3 : float  # ALTITUDE
+    cp1_srv: str
+    cp1_precv: str | None  # UNSURE
+    cp1_altitude_type: str
+    cp1_date: str
+
+    cg2_coord1: float | None
+    cg2_coord2: float | None
+    cg2_coord3: float | None
+    cg2_srt: str | None
+    cg2_prec: str | None  # UNSURE
+    cg2_date: str | None  # UNSURE
+
+    cp2_coord1: int | None
+    cp2_coord2: int | None
+    cp2_srt: str | None
+    cp2_prec: str | None  # UNSURE
+    cp2_coord3 : float | None
+    cp2_srv: str | None
+    cp2_precv: str | None  # UNSURE
+    cp2_altitude_type: str | None
+    cp2_date: str | None
+
+    g: str | None  # UNSURE
+    gravi_no: str | None  # UNSURE
+    gravi_srg: str | None  # UNSURE
+    gravi_traitprecision: str | None  # UNSURE
+    gravi_calcul_date: str | None  # UNSURE
+    gravi_abs_date: str | None  # UNSURE
+    gravi_rel_date: str | None  # UNSURE
+    gravi_gradient: str | None  # UNSURE
+    gravi_gradient_ecart_type: str | None  # UNSURE
+    gravi_grad_date: str | None  # UNSURE
+
+    freres_info: str | None  # Autres repères du triplet
+    groupe_info: str | None  # UNSURE
+
+    voisin: str | None
+    voisin_distance: float | None
+    voisin_domaine: Literal["nivf", "nivo"] | None
+
+    jumeau: str | None  # Matricule rsg du site (s’il s’agit aussi d’un point géodésique)
+    jumeau_no: str | None  # Numéro du point dans le site (ex: b)
+    jumeau_info: str | None  # Deux infos précédentes en toutes lettres (ex: Point b du site géodésique 3155504)
+    jumeau_dom: Literal["rsgf", "rsgo"] | None  # UNSURE (note: lorsque l’API sera adaptée pour les points du RGF,
+                                                # il faudra ici mettre nivf et nivo)
+
+    autre_canevas_info: str | None  # UNSURE
+
+    support: str
+    support_part: str
+    rep_hori: str | None
+    rep_vert: str | None
+
+    proprio: str  # ex: "INSTITUT NATIONAL DE L'INFORMATION GEOGRAPHIQUE ET FORESTIERE (IGN)"
+    proprio_artic: str | None
+    proprio_sigle: str | None
+    proprio_adr: str | None
+
+    url_pdf: str
+    img1: str | None
+    img1_date: str | None
+    img1_azim: int | None
+    img1_url: int | None
+
+    img2: str | None
+    img2_date: str | None
+    img2_azim: int | None
+    img2_url: int | None
+
+    groupe_img1: str | None
+    groupe_img1_date: str | None
+    groupe_img1_azim: int | None
+    groupe_img1_url: int | None
+
+    groupe_img2: str | None
+    groupe_img2_date: str | None
+    groupe_img2_azim: int | None
+    groupe_img2_url: int | None
+
+    groupe_croquis1: str | None
+    groupe_croquis1_date: str | None
+    groupe_croquis1_azim: int | None
+    groupe_croquis1_url: int | None
+
+    groupe_croquis2: str | None
+    groupe_croquis2_date: str | None
+    groupe_croquis2_azim: int | None
+    groupe_croquis2_url: int | None
+
+    groupe_type: str | None
+    groupe_typecode: str | None
+    groupe_typeinfo: str | None
+    groupe_lieudit: str | None
 
 
 ETAT_LITERAL = Literal[
@@ -103,7 +196,7 @@ TYPE_LITERAL = Literal[
     "Repère suisse",
     "Repère espagnol",
     "Repère ville de Marseille",
-    "Traie de crue",
+    "Trait de crue",
     "Borne",
     "Repère SHOM (Service Hydrographique et Océanographique de la Marine)",
     "Repère fondamental",
@@ -114,7 +207,7 @@ TYPE_LITERAL = Literal[
 ]
 
 
-class BetterDict(TypedDict):
+class BetterDict(TypedDict):  # TODO: réécrire cette classe
     matricule: str
     cid: int
     fiche_url: str
@@ -155,10 +248,10 @@ class BetterDict(TypedDict):
     hors_ign: str
     remarques: str
     exploitabilite_gps: Literal[
-        "Exploitable directement par GPS",
-        "Exploitable par GPS depuis une station excentrée",
-        "Inexploitable par GPS",
-        "Exploitation par GPS inconnue"
+        "Exploitable directement par GNSS",
+        "Exploitable par GNSS depuis une station excentrée",
+        "Inexploitable par GNSS",
+        "Exploitation par GNSS inconnue"
     ]
     geod_info: str
 
@@ -166,12 +259,15 @@ class BetterDict(TypedDict):
 class RNGeometryJSON(TypedDict):
     type: Literal["Point"]
     coordinates: tuple[float, float]
+    geometry_name: str
 
 
 class RNJSON(TypedDict):
     type: Literal["Feature"]
+    id: str
     geometry: RNGeometryJSON
     properties: RNPropertiesJSON
+    bbox: dict[Literal[0, 1, 2, 3], float]
 
 
 class GeodeticError(Exception):

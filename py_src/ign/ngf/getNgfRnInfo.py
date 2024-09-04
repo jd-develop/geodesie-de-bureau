@@ -23,7 +23,6 @@ import requests
 import json
 from typing_classes import *
 from rn_types import *
-from requests_responses_parser import SearchParser
 import math
 from pprint import pprint
 
@@ -49,23 +48,23 @@ pprint(response.json())
 
 exit()
 
-def limit_dms_coord_for_bbox(dms_coord: str):
-    """2.1749 -> 2.1, 48.8039 -> 48.8, -5.0914 -> -5.1"""
-    floor = math.floor(float(dms_coord) * 10)
-    whole = str(floor)[:-1]
-    decimal = str(floor)[-1]
-    if not whole:
-        whole = "0"
-    if decimal == "0" or not decimal:
-        return whole
-    return whole + "." + decimal
+# def limit_dms_coord_for_bbox(dms_coord: str):
+#     """2.1749 -> 2.1, 48.8039 -> 48.8, -5.0914 -> -5.1"""
+#     floor = math.floor(float(dms_coord) * 10)
+#     whole = str(floor)[:-1]
+#     decimal = str(floor)[-1]
+#     if not whole:
+#         whole = "0"
+#     if decimal == "0" or not decimal:
+#         return whole
+#     return whole + "." + decimal
 
 
-def find_rn_dict_from_bbox(bbox_json: list[RNJSON], matricule: str) -> RNJSON:
-    for rn_json in bbox_json:
-        if rn_json["properties"]["rn_nom"] == matricule:
-            return rn_json
-    raise GeodeticError("Unable to find the Repère de nivellement in the bbox list")
+# def find_rn_dict_from_bbox(bbox_json: list[RNJSON], matricule: str) -> RNJSON:
+#     for rn_json in bbox_json:
+#         if rn_json["properties"]["rn_nom"] == matricule:
+#             return rn_json
+#     raise GeodeticError("Unable to find the Repère de nivellement in the bbox list")
 
 
 def is_valid_index_choice(choice: str, list_len: int):
