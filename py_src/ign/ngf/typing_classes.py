@@ -67,7 +67,7 @@ class RNPropertiesJSON(TypedDict):
     cp1_srt: str
     cp1_prec: str | None  # UNSURE
     cp1_coord3 : float  # ALTITUDE
-    cp1_srv: str
+    cp1_srv: str  # système altimétrique (c’est ÉVIDENT)
     cp1_precv: str | None  # UNSURE
     cp1_altitude_type: str
     cp1_date: str
@@ -208,52 +208,58 @@ TYPE_LITERAL = Literal[
 
 
 class BetterDict(TypedDict):  # TODO: réécrire cette classe
-    matricule: str
-    cid: int
+    matricule: str  # nom
+    cid: int  # id
     fiche_url: str
-    systeme_altimetrique: Literal["NGF-IGN 1969", "NGF-IGN 1978"]
-    altitude: str
-    altitude_complementaire: str
-    altitude_type: Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]
-    derniere_observation: str
-    nouveau_calcul: str
-    derniere_visite: str
-    etat: ETAT_LITERAL
-    type: TYPE_LITERAL
-    type_complement: str
-    canex_info: str
-    type_complement_avec_canex: str
 
-    longitude: float
-    latitude: float
-    e: str
-    n: str
+    systeme_altimetrique: Literal["NGF-IGN 1969", "NGF-IGN 1978"]  # cp1_srv
+    altitude: float  # cp1_coord3
+    # altitude_complementaire: str  # useless for RNs, only used for geodetic points!
+    altitude_type: Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]  # cp1_altitude_type
+    derniere_observation: str  # obs_date
+    nouveau_calcul: str  # cp1_date
+    derniere_visite: str  # vis_date
+    etat: ETAT_LITERAL  # etat
+    type: TYPE_LITERAL  # type, e.g. M  REPERE CYLINDRIQUE DU NIVELLEMENT GENERAL
+    type_complement: str  # type_info
+    canex_info: str  # autre_canevas_info
+    type_complement_avec_canex: str  # un str fabriqué avec type_complement et canex_info
 
-    departement: str
-    insee: str
-    commune: str
-    voie_suivie: str
-    voie_de: str | None
-    voie_vers: str | None
-    voie_cote: str | None
-    voie_pk: str | None
-    distance: str | None
-    du_repere: str | None
-    localisation: str
-    support: str
-    partie_support: str
-    reperement_horizontal: str
-    reperement_vertical: str
+    longitude: float  # cg1_coord1_dms
+    latitude: float  # cg1_coord2_dms
+    e: int  # cp1_coord1
+    n: int  # cp1_coord2
 
-    hors_ign: str
-    remarques: str
-    exploitabilite_gps: Literal[
+    entite: str  # entite (ex. HAUTE-GARONNE)
+    entite_nature: str  # entite_nature (ex. Département)
+    insee: str  # insee (ex. 31555)
+    commune: str  # commune (ex. Toulouse)
+    voie_suivie: str  # voie_suivie (ex. CANAL DE BRIENNE)
+    voie_de: str | None  # voie_de (ex PORT SAINT-PIERRE)
+    voie_vers: str | None  # voie_vers (ex. PORT DE L'EMBOUCHURE)
+    voie_cote: str | None  # voie_cote (ex. Droit)
+    voie_pk: float | None  # voie_pk (point kilométrique) (ex 0.72)
+    distance: float | None  # voisin_distance (distance au repère voisin)
+    du_repere: str | None  # voisin
+    localisation: str  # localisation (ex. ALLEE DE BARCELONE)
+    support: str  # support (ex. PONT DE L'AVENUE P.SEJOURNE SUR LE CANAL DE BRIENNE)
+    partie_support: str  # support_part (ex. MUR EN RETOUR AVAL RIVE DROITE)
+    reperement_horizontal: str  # rep_hori (ex. A 1.55 M DE LA CHAINE D'ANGLE COTE CANAL)
+    reperement_vertical: str  # rep_vert (ex. A 0.17 M AU-DESSUS DE L'ARETE SUPERIEURE DU SOUBASSEMENT)
+
+    triplet: str  # freres_info (autres repères du triplet)
+
+    hors_ign: bool  # False si obs_org est 100001 ou 100063 (IGN).
+    # Par exemple, le RN T'Z' - 2 TER est hors_ign car observé par 100111
+    # (présumablement la SNCF)
+    remarques: str  # remarque
+    exploitabilite_gnss: Literal[
         "Exploitable directement par GNSS",
         "Exploitable par GNSS depuis une station excentrée",
         "Inexploitable par GNSS",
         "Exploitation par GNSS inconnue"
-    ]
-    geod_info: str
+    ]  # expl_gps
+    geod_info: str  # jumeau_info: infos à propos du point géodésique lié (ex. POINT b DU SITE GEODESIQUE 3155504)
 
 
 class RNGeometryJSON(TypedDict):

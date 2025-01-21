@@ -43,8 +43,12 @@ def get_params_from_matricule(matricule: str) -> dict[str, str]:
         "cql_filter": f"nom='{matricule}' and domaine='nivf'"
     }
 
-response = requests.get(URL, params=get_params_from_matricule("T''.D.S3 - 17"))
-pprint(response.json())
+response = requests.get(URL, params=get_params_from_matricule("T''Z'' - 2 TER"))
+response_json = response.json()
+pprint(response_json)
+
+if response_json["numberMatched"] == 0:
+    print("No matches :(")
 
 exit()
 
