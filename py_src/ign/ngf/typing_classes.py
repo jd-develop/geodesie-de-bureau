@@ -107,8 +107,9 @@ class RNPropertiesJSON(TypedDict):
     gravi_grad_date: str | None  # UNSURE
 
     freres_info: str | None  # Autres repères du triplet
-    groupe_info: str | None  # UNSURE
+    groupe_info: str | None  # Utilisé pour les points rsg (ex. "TOULOUSE IV"), mais pas les RN
 
+    # Distance ... du repère ...
     voisin: str | None
     voisin_distance: float | None
     voisin_domaine: Literal["nivf", "nivo"] | None
@@ -119,7 +120,7 @@ class RNPropertiesJSON(TypedDict):
     jumeau_dom: Literal["rsgf", "rsgo"] | None  # UNSURE (note: lorsque l’API sera adaptée pour les points du RGF,
                                                 # il faudra ici mettre nivf et nivo)
 
-    autre_canevas_info: str | None  # UNSURE
+    autre_canevas_info: str | None  # ex-canex (ex. "SERVICE HYDROGRAPHIQUE ET OCEANOGRAPHIQUE DE LA MARINE : OUESSANT - LAMPAUL - B")
 
     support: str
     support_part: str
