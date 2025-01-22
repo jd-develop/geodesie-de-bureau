@@ -61,18 +61,23 @@ RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
     "REPERE IPG (INSTITUT DE PHYSIQUE DU GLOBE)":
         "Repère IPG (Institut de Physique du Globe)",
     "REPERE CONIQUE": "Repère conique",
-    "REPERE EN FONTE TRIANGULAIRE": "Repère en fonte triangulaire"
+    "REPERE EN FONTE TRIANGULAIRE": "Repère en fonte triangulaire",
+    "REPERE RECONSTRUCTION": "Repère reconstruction"
 }
 
-RN_ETAT: dict[str, ETAT_LITERAL] = {  # TODO: réécrire ce dict
-    "D": "Détruit",
-    "E": "Bon état",
-    "I": "Imprenable",
-    "M": "Mauvais état",
-    "N": "Non retrouvé",
-    "P": "Présumé déplacé",
-    "S": "Supposé détruit (déposé par un service local)",
-    "Y": "Détruit après observation"
+RN_ETAT: dict[str, ETAT_LITERAL] = {
+    "BON ETAT": "Bon état",
+    "IMPRENABLE": "Imprenable",
+    "MAUVAIS ETAT": "Mauvais état",
+    "NON RETROUVE": "Non retrouvé",
+    "PRESUME DEPLACE": "Présumé déplacé",
+    "EXPLOITABLE EN MAUVAIS ETAT OU LEGEREMENT INCLINE": "Exploitable, en mauvais état ou légèrement incliné",
+    "INCLINE FORTEMENT": "Incliné fortement",
+    "BON ETAT MAIS DOUTEUX": "Bon état mais douteux"
+    # legacy (old API values)
+    # "D": "Détruit",
+    # "S": "Supposé détruit (déposé par un service local)",
+    # "Y": "Détruit après observation",
 }
 
 H_TYPE_CODE: dict[str, Literal["Altitude normale", "Altitude orthométrique", "Altitude provisoire"]] = {
@@ -86,8 +91,8 @@ def get_rn_type(type_: str) -> TYPE_LITERAL:
     return RN_TYPE_CODE.get(type_, "Inconnu")
 
 
-def get_etat_colour(full_type: str):
-    if full_type == "Bon état":
+def get_etat_colour(full_type: ETAT_LITERAL):
+    if full_type in ["Bon état", "Exploitable, en mauvais état ou légèrement incliné"]:
         return f"\033[32m{full_type}\033[0m"
     return f"\033[31m{full_type}\033[0m"
 

@@ -45,6 +45,12 @@ class RNPropertiesJSON(TypedDict):
     voie_de: str
     voie_vers: str
     voie_cote: str
+    # voie_cote peut être :
+    # * Droit
+    # * Gauche
+    # * Milieu
+    # * (Chaîne de caractère vide)
+    # et pas autre chose
     voie_pk: float
 
     etat: str
@@ -163,8 +169,17 @@ class RNPropertiesJSON(TypedDict):
 
 
 ETAT_LITERAL = Literal[
-    "Détruit", "Bon état", "Imprenable", "Mauvais état", "Non retrouvé", "Présumé déplacé",
-    "Supposé détruit (déposé par un service local)", "Détruit après observation"
+    "Bon état",
+    "Imprenable",
+    "Mauvais état",
+    "Non retrouvé",
+    "Présumé déplacé",
+    "Exploitable, en mauvais état ou légèrement incliné",
+    "Incliné fortement",
+    "Bon état mais douteux"
+    # old API
+    # "Détruit", "Bon état", "Imprenable", "Mauvais état", "Non retrouvé", "Présumé déplacé",
+    # "Supposé détruit (déposé par un service local)", "Détruit après observation"
 ]
 
 TYPE_LITERAL = Literal[
@@ -203,11 +218,12 @@ TYPE_LITERAL = Literal[
     "Tube",
     "Repère IPG (Institut de Physique du Globe)",
     "Repère conique",
-    "Repère en fonte triangulaire"
+    "Repère en fonte triangulaire",
+    "Repère reconstruction"
 ]
 
 
-class BetterDict(TypedDict):  # TODO: réécrire cette classe
+class BetterDict(TypedDict):
     matricule: str  # nom
     cid: int  # id
     fiche_url: str

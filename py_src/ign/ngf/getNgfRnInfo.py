@@ -304,3 +304,5 @@ if __name__ == "__main__":
     # M".A.K3L3 - 15-I
     # FM" - 3-VIII
     # FM" - 3-V
+    # R'.C.P3 - 155 (État : imprenable)
+    # B.A.L3 - 161 (État : présumé déplacé)
