@@ -17,7 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Literal
-from typing_classes import ETAT_LITERAL, TYPE_LITERAL
+from typing_classes import ÉTAT_LITERAL, TYPE_LITERAL, GNSS_EXPL_LITERAL
+from typing_classes import SYSTÈME_ALTIMÉTRIQUE_LITERAL, ALTITUDE_TYPE_LITERAL
+from typing_classes import GeodeticError
 
 RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
     "INCONNU": "Inconnu",
@@ -65,7 +67,7 @@ RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
     "REPERE RECONSTRUCTION": "Repère reconstruction"
 }
 
-RN_ETAT: dict[str, ETAT_LITERAL] = {
+RN_ÉTAT: dict[str, ÉTAT_LITERAL] = {
     "BON ETAT": "Bon état",
     "IMPRENABLE": "Imprenable",
     "MAUVAIS ETAT": "Mauvais état",
@@ -91,14 +93,14 @@ def get_rn_type(type_: str) -> TYPE_LITERAL:
     return RN_TYPE_CODE.get(type_, "Inconnu")
 
 
-def get_etat_colour(full_type: ETAT_LITERAL):
+def get_etat_colour(full_type: ÉTAT_LITERAL):
     if full_type in ["Bon état", "Exploitable, en mauvais état ou légèrement incliné"]:
         return f"\033[32m{full_type}\033[0m"
     return f"\033[31m{full_type}\033[0m"
 
 
-def get_gps_exploit(gps_exploit_code: str):
-    match gps_exploit_code.split():
+def get_gnss_exploit(gnss_exploit_code: str) -> GNSS_EXPL_LITERAL:
+    match gnss_exploit_code.split():
         case ["EXPLOITABLE", "DIRECTEMENT", "PAR", _]:
             return "Exploitable directement par GNSS"
         case ["EXPLOITABLE", "PAR", _, "DEPUIS", "UNE", "STATION", "EXCENTREE"]:
@@ -107,4 +109,25 @@ def get_gps_exploit(gps_exploit_code: str):
             return "Inexploitable par GNSS"
         case _:
             return "Exploitation par GNSS inconnue"
+
+
+def get_systeme_altimetrique(syst_altim: str) -> SYSTÈME_ALTIMÉTRIQUE_LITERAL:
+    if syst_altim == "Système altimétrique : NGF-IGN 1969":
+        return "NGF-IGN 1969"
+    elif syst_altim == "Système altimétrique : NGF-IGN 1978":
+        return "NGF-IGN 1978"
+    else:
+        raise GeodeticError(f"Unknown Altimetric System : '{syst_altim}'")
+
+
+def get_altitude_type(altitude_type: str) -> ALTITUDE_TYPE_LITERAL:
+    match altitude_type:
+        case "ALTITUDE NORMALE":
+            return "Altitude normale"
+        case "ALTITUDE PROVISOIRE":
+            return "Altitude provisoire"
+        case "ALTITUDE ORTHOMETRIQUE":
+            return "Altitude orthométrique"
+        case _:
+            raise GeodeticError(f"Unknown Altitude Type : '{altitude_type}'")
 

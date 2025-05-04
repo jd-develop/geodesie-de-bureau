@@ -20,11 +20,8 @@
                      (NGF-nivf, i.e. metropolitan France including Corsica)
 """
 import requests
-import json
 from typing_classes import *
 from rn_types import *
-import math
-from pprint import pprint
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -43,196 +40,109 @@ def get_params_from_matricule(matricule: str) -> dict[str, str]:
         "cql_filter": f"nom='{matricule}' and domaine='nivf'"
     }
 
-response = requests.get(URL, params=get_params_from_matricule("T''Z'' - 2 TER"))
-response_json = response.json()
-pprint(response_json)
 
-if response_json["numberMatched"] == 0:
-    print("No matches :(")
-
-exit()
-
-# def limit_dms_coord_for_bbox(dms_coord: str):
-#     """2.1749 -> 2.1, 48.8039 -> 48.8, -5.0914 -> -5.1"""
-#     floor = math.floor(float(dms_coord) * 10)
-#     whole = str(floor)[:-1]
-#     decimal = str(floor)[-1]
-#     if not whole:
-#         whole = "0"
-#     if decimal == "0" or not decimal:
-#         return whole
-#     return whole + "." + decimal
-
-
-# def find_rn_dict_from_bbox(bbox_json: list[RNJSON], matricule: str) -> RNJSON:
-#     for rn_json in bbox_json:
-#         if rn_json["properties"]["rn_nom"] == matricule:
-#             return rn_json
-#     raise GeodeticError("Unable to find the Repère de nivellement in the bbox list")
-
-
-def is_valid_index_choice(choice: str, list_len: int):
-    try:
-        return 0 <= int(choice) < list_len
-    except ValueError:
-        return False
-
-
-def find_matricule_to_use_from_list(matricule_input: str, reperes_found: list[tuple[int, str]]) -> str:
-    if len(reperes_found) == 1:
-        return reperes_found[0][1]
-    for _, matricule in reperes_found:
-        if matricule == matricule_input:
-            return matricule_input
-    print("Repères found: ")
-    i = 0
-    for i, (cid, matricule) in enumerate(reperes_found):
-        print(f"{i}: {matricule} (id {cid})")
-
-    while not is_valid_index_choice(
-            choix := input(f"Your choice (0-{i}): "),
-            len(reperes_found)
-    ):
-        print(f"Please enter a valid choice from 0 to {i}")
-
-    return reperes_found[int(choix)][1]
-
-
-def print_fiche(rn_json: RNJSON):
+def print_fiche(rn_json: BetterDict):
     """Affiche toutes les informations sous une forme compréhensible dans la console"""
-    prn_json = better_dict(rn_json)
     print(RED + "=============== Repère de nivellement ===============" + RESET)
     print()
-    print(BLUE + f"Fiche en ligne{RESET} : {prn_json['fiche_url']}")
+    print(BLUE + f"Fiche en ligne{RESET} : {rn_json['fiche_url']}")
     print()
-    print(BLUE + f"Matricule{RESET} : {prn_json['matricule']}")
-    print(BLUE + f"Système altimétrique{RESET} : {prn_json['systeme_altimetrique']}")
-    print(BLUE + f"Altitude{RESET} : {prn_json['altitude']}m ({prn_json['altitude_type']})")
-    if prn_json["altitude_complementaire"]:
-        print(BLUE + f"Altitude{RESET} : {prn_json['altitude_complementaire']}m (Altitude complémentaire)")
+    print(BLUE + f"Matricule{RESET} : {rn_json['matricule']}")
+    print(BLUE + f"Système altimétrique{RESET} : {rn_json['systeme_altimetrique']}")
+    print(BLUE + f"Altitude{RESET} : {rn_json['altitude']}m ({rn_json['altitude_type']})")
 
     print()
     print(RED + "=== Dernière visite et observation ===" + RESET)
-    print(BLUE + f"Année de dernière observation{RESET} : {prn_json['derniere_observation']}")
-    print(BLUE + f"Année de nouveau calcul{RESET} : {prn_json['nouveau_calcul']}")
-    print(BLUE + f"Dernière visite{RESET} : {prn_json['derniere_visite']}")
-    print(BLUE + f"État{RESET} : {get_etat_colour(prn_json['etat'])}")
+    print(BLUE + f"Année de dernière observation{RESET} : {rn_json['derniere_observation']}")
+    print(BLUE + f"Année de nouveau calcul{RESET} : {rn_json['nouveau_calcul']}")
+    print(BLUE + f"Dernière visite{RESET} : {rn_json['derniere_visite']}")
+    print(BLUE + f"État{RESET} : {get_etat_colour(rn_json['etat'])}")
 
     print()
     print(RED + "=== Type ===" + RESET)
-    print(BLUE + f"Type{RESET} : {prn_json['type']}")
-    if prn_json["type_complement_avec_canex"]:
-        print(BLUE + f"Complément{RESET} : {prn_json['type_complement_avec_canex']}")
+    print(BLUE + f"Type{RESET} : {rn_json['type']}")
+    if rn_json["type_complement_avec_canex"]:
+        print(BLUE + f"Complément{RESET} : {rn_json['type_complement_avec_canex']}")
 
     print()
     print(RED + "=== Coordonnées DMS ===" + RESET)
-    # print("Système : RGF93 v1 (ETRS89) - Ellipsoïde : IAG GRS 1980")
-    print(BLUE + f"Longitude (dms){RESET} : {prn_json['longitude']}")
-    print(BLUE + f"Latitude (dms){RESET} : {prn_json['latitude']}")
-    print(RED + "=== Coordonnées en kilomètres ===" + RESET)
-    # print("Système : RGF93 v1 (ETRS89) - Projection : LAMBERT-93")
-    print(BLUE + f"E (km){RESET} : {prn_json['e']}")
-    print(BLUE + f"N (km){RESET} : {prn_json['n']}")
+    print(rn_json["dms_syst_et_ellipsoide"])
+    print(BLUE + f"Longitude (dms){RESET} : {rn_json['longitude_dms']}")
+    print(BLUE + f"Latitude (dms){RESET} : {rn_json['latitude_dms']}")
+    print(BLUE + f"Longitude {RESET} : {rn_json['longitude']}")
+    print(BLUE + f"Latitude {RESET} : {rn_json['latitude']}")
+    print(RED + "=== Coordonnées en mètres ===" + RESET)
+    print(rn_json["en_syst_et_ellipsoide"])
+    print(BLUE + f"E (m){RESET} : {rn_json['e']}")
+    print(BLUE + f"N (m){RESET} : {rn_json['n']}")
 
     print()
     print(RED + "=== Localisation ===" + RESET)
-    print(BLUE + f"Département{RESET} : {prn_json['departement']}")
-    print(BLUE + f"Numéro INSEE{RESET} : {prn_json['insee']}")
-    print(BLUE + f"Commune{RESET} : {prn_json['commune']}")
-    print(BLUE + f"Voie suivie{RESET} : {prn_json['voie_suivie']}")
-    if prn_json["voie_de"] is not None:
-        print(f"|- {BLUE}de{RESET}       : {prn_json['voie_de']}")
-    if prn_json["voie_vers"] is not None:
-        print(f"|- {BLUE}à{RESET}        : {prn_json['voie_vers']}")
-    if prn_json["voie_cote"] is not None:
-        print(f"|- {BLUE}côté{RESET}     : {prn_json['voie_cote']}")
-    if prn_json["voie_pk"]:
-        print(f"|- {BLUE}PK{RESET}       : {prn_json['voie_pk']} km")
-    if prn_json["distance"]:
-        print(BLUE + f"Distance{RESET}     : {prn_json['distance']} km")
-        print(f"|- {BLUE}du repère{RESET} : {prn_json['du_repere']}")
-    print(BLUE + f"Localisation{RESET} : {prn_json['localisation']}")
+    print(BLUE + f"{rn_json['entite_nature']}{RESET} : {rn_json['entite']} ({rn_json['entite_no']})")
+    print(BLUE + f"Numéro INSEE{RESET} : {rn_json['insee']}")
+    print(BLUE + f"Commune{RESET} : {rn_json['commune']}")
+    print(BLUE + f"Voie suivie{RESET} : {rn_json['voie_suivie']}")
+    print(f"|- {BLUE}de{RESET}       : {rn_json['voie_de']}")
+    print(f"|- {BLUE}à{RESET}        : {rn_json['voie_vers']}")
+    print(f"|- {BLUE}côté{RESET}     : {rn_json['voie_cote']}")
+    if rn_json["voie_pk"] is not None:
+        print(f"|- {BLUE}PK{RESET}       : {rn_json['voie_pk']} km")
+    if rn_json["distance"] is not None:
+        print(BLUE + f"Distance{RESET}     : {rn_json['distance']} km")
+        print(f"|- {BLUE}du repère{RESET} : {rn_json['du_repere']}")
+    print(BLUE + f"Localisation{RESET} : {rn_json['localisation']}")
 
     print()
     print(RED + "=== Support === " + RESET)
-    print(BLUE + f"Support{RESET} : {prn_json['support']}", end="")
-    if prn_json["geod_info"] != "":
-        print(f" ({prn_json['geod_info']})")
+    print(BLUE + f"Support{RESET} : {rn_json['support']}", end="")
+    if rn_json["geod_info"] != "":
+        print(f" ({rn_json['geod_info']})")
     else:
         print()
 
-    print(BLUE + f"Partie du support{RESET} : {prn_json['partie_support']}")
+    print(BLUE + f"Partie du support{RESET} : {rn_json['partie_support']}")
     print(BLUE + f"Repèrements{RESET} :")
-    print(f"|- {BLUE}horizontal{RESET} : {prn_json['reperement_horizontal']}")
-    print(f"|- {BLUE}vertical{RESET}   : {prn_json['reperement_vertical']}")
+    print(f"|- {BLUE}horizontal{RESET} : {rn_json['reperement_horizontal']}")
+    print(f"|- {BLUE}vertical{RESET}   : {rn_json['reperement_vertical']}")
 
     print()
     print(RED + "=== Remarques ===" + RESET)
-    print(prn_json["remarques"])
+    print(rn_json["remarques"])
 
-    print(prn_json["exploitabilite_gps"])
+    print(rn_json["exploitabilite_gnss"])
 
-    if prn_json["hors_ign"] not in ["100001", "100063", "", None]:
-        print(RED + prn_json["hors_ign"] + RESET)
+    if rn_json["hors_ign"]:
+        print(RED + "Ce repère n’a pas été observé par l’IGN." + RESET)
 
     # TODO triplets de nivellement
 
 
-def choose_rn_from_matricule(matricule_input: str) -> str:
-    """Using the matricule provided by the user, searches for corresponding
-       matricules, lets the user choose one or
-       chooses one automatically if there is no ambiguity"""
-    assert len(matricule_input) != 0
-    assert "|" not in matricule_input
-    matricule_input = matricule_input.replace("’", "'").strip()
-
-    data = {"repere_ajax": matricule_input, "identifiant_visugeod": "identificateur_repere"}
-
-    response = requests.post(URL, headers=HEADERS, data=data)
-    parser = SearchParser()
-    parser.feed(response.text)
-    reperes_found = parser.rn_list
-
-    if len(reperes_found) == 0:
-        raise GeodeticError(
-            f"Could not find Repère de Nivellement from matricule {matricule_input}"
-        )
-
-    return find_matricule_to_use_from_list(matricule_input, reperes_found)
-
-
 def dict_from_matricule(matricule_to_use: str) -> RNJSON:
     """Returns the dict of the Repère de Nivellement from its matricule"""
-    matricule_with_double_primes = matricule_to_use.replace("'", "''")
-    data = {"h_recherche": f"repere|{matricule_with_double_primes}", "t": "france"}
-    response = requests.post(URL, headers=HEADERS, data=data)
-    rn_basic_infos = response.text.split("\n")[0]
-    if rn_basic_infos == "1":
+
+    matricule_with_double_primes = matricule_to_use.replace("’", "'").replace("'", "''").strip()
+
+    response = requests.get(URL, params=get_params_from_matricule(matricule_with_double_primes))
+    response_json = response.json()
+    if response_json["numberMatched"] == 0:
         raise GeodeticError(
             f"Could not find Repère de Nivellement from matricule {matricule_to_use}"
         )
+    if response_json["numberMatched"] > 1:
+        raise GeodeticError(
+            f"Nonunique matricule!"
+        )
 
-    dms_coords_raw = rn_basic_infos.split("|")[0].split()
-    long, lat = map(limit_dms_coord_for_bbox, dms_coords_raw)
-
-    bbox_url = f"https://geodesie.ign.fr/ripgeo/fr/api/nivrn/bbox/{long}/{lat}/json/"
-    bbox_json_raw = requests.post(bbox_url).text
-
-    bbox_json = json.loads(bbox_json_raw)
-    rn_json = find_rn_dict_from_bbox(bbox_json["features"], matricule_to_use)
+    rn_json = response_json["features"][0]
     return rn_json
 
 
 def better_dict(rn_json: RNJSON) -> BetterDict:
     """Returns the useful information contained in the dictionnary"""
-    fiche_url = f"https://geodesie.ign.fr/fiches/index.php?module=e&action=fichepdf&source=gp&rn_cid=" \
-                f"{rn_json['properties']['rn_cid']}&geo_cid=0"
-    if rn_json["properties"]["nivf_rea_code"] == 2:
-        syst_altimetrique = "NGF-IGN 1969"
-    else:
-        syst_altimetrique = "NGF-IGN 1978"
-    type_complement = rn_json["properties"]["rn_type_compl"]
-    canex_info = rn_json["properties"]["canex_info"]
+    fiche_url = rn_json["properties"]["url_pdf"]
+    syst_altimetrique = get_systeme_altimetrique(rn_json["properties"]["cp1_srv"])
+    type_complement = rn_json["properties"]["type_info"]
+    canex_info = rn_json["properties"]["autre_canevas_info"]
     if type_complement and canex_info:
         type_complement_avec_canex = type_complement + ", " + canex_info
     elif type_complement:
@@ -241,57 +151,69 @@ def better_dict(rn_json: RNJSON) -> BetterDict:
         type_complement_avec_canex = canex_info
     else:
         type_complement_avec_canex = ""
+
+    rep_hori = rn_json["properties"]["rep_hori"]
+    rep_vert = rn_json["properties"]["rep_vert"]
+    geod_info = rn_json["properties"]["jumeau_info"]
+
     return {
-        "matricule": rn_json["properties"]["rn_nom"],
-        "cid": rn_json["properties"]["rn_cid"],
+        "matricule": rn_json["properties"]["nom"],
+        "cid": int(rn_json["properties"]["id"]),
         "fiche_url": fiche_url,
         "systeme_altimetrique": syst_altimetrique,
-        "altitude": rn_json["properties"]["altitude"],
-        "altitude_complementaire": rn_json["properties"]["altitude_complementaire"],
-        "altitude_type": H_TYPE_CODE[rn_json["properties"]["h_type_code"]],
+        "altitude": rn_json["properties"]["cp1_coord3"],
+        "altitude_type": get_altitude_type(rn_json["properties"]["cp1_altitude_type"]),
 
-        "derniere_observation": rn_json["properties"]["rn_obs_date"],
-        "nouveau_calcul": rn_json["properties"]["trg_annee"],
-        "derniere_visite": rn_json["properties"]["rn_vis_date"],
-        "etat": RN_ETAT[rn_json["properties"]["rn_etat_code"]],
+        "derniere_observation": rn_json["properties"]["obs_date"],
+        "nouveau_calcul": rn_json["properties"]["cp1_date"],
+        "derniere_visite": rn_json["properties"]["vis_date"],
+        "etat": RN_ÉTAT[rn_json["properties"]["etat"]],
 
-        "type": get_rn_type(rn_json["properties"]["rn_type_code"]),
-        "type_complement": rn_json["properties"]["rn_type_compl"],
-        "canex_info": rn_json["properties"]["canex_info"],
+        "type": RN_TYPE_CODE[rn_json["properties"]["type"]],
+        "type_complement": rn_json["properties"]["type_info"],
+        "canex_info": rn_json["properties"]["autre_canevas_info"],
         "type_complement_avec_canex": type_complement_avec_canex,
 
-        "longitude": rn_json["geometry"]["coordinates"][0],
-        "latitude": rn_json["geometry"]["coordinates"][1],
-        "e": rn_json["properties"]["e"],
-        "n": rn_json["properties"]["n"],
+        "longitude": rn_json["properties"]["cg1_coord1"],
+        "latitude": rn_json["properties"]["cg1_coord2"],
+        "longitude_dms": rn_json["properties"]["cg1_coord1_dms"],
+        "latitude_dms": rn_json["properties"]["cg1_coord2_dms"],
+        "dms_syst_et_ellipsoide": rn_json["properties"]["cg1_srt"],
+        "e": rn_json["properties"]["cp1_coord1"],
+        "n": rn_json["properties"]["cp1_coord2"],
+        "en_syst_et_ellipsoide": rn_json["properties"]["cp1_srt"],
 
-        "departement": rn_json["properties"]["departement_code"],
+        "entite": rn_json["properties"]["entite"],
+        "entite_no": rn_json["properties"]["entite_no"],
+        "entite_nature": rn_json["properties"]["entite_nature"],
         "insee": rn_json["properties"]["insee"],
-        "commune": rn_json["properties"]["commune_nom"],
+        "commune": rn_json["properties"]["commune"],
         "voie_suivie": rn_json["properties"]["voie_suivie"],
         "voie_de": rn_json["properties"]["voie_de"],
         "voie_vers": rn_json["properties"]["voie_vers"],
-        "voie_cote": get_cote(rn_json["properties"]["voie_cote"]),
+        "voie_cote": rn_json["properties"]["voie_cote"],
         "voie_pk": rn_json["properties"]["voie_pk"],
-        "distance": rn_json["properties"]["distance"],
-        "du_repere": rn_json["properties"]["rn_proche_nom"],
+        "distance": rn_json["properties"]["voisin_distance"],
+        "du_repere": rn_json["properties"]["voisin"],
         "localisation": rn_json["properties"]["localisation"],
 
         "support": rn_json["properties"]["support"],
-        "partie_support": rn_json["properties"]["support_partie"],
-        "reperement_horizontal": rn_json["properties"]["reper_horiz"],
-        "reperement_vertical": rn_json["properties"]["reper_vertical"],
+        "partie_support": rn_json["properties"]["support_part"],
+        "reperement_horizontal": rep_hori if rep_hori is not None else "",
+        "reperement_vertical": rep_vert if rep_vert is not None else "",
 
-        "hors_ign": rn_json["properties"]["hors_ign"],
+        "hors_ign": rn_json["properties"]["obs_org"] not in ["100001", "100063"],
         "remarques": rn_json["properties"]["remarque"],
-        "exploitabilite_gps": get_gps_exploit(rn_json["properties"]["rn_gps_eploit_code"]),
-        "geod_info": rn_json["properties"]["geod_info"]
+        "exploitabilite_gnss": get_gnss_exploit(rn_json["properties"]["expl_gps"]),
+        "geod_info": geod_info if geod_info is not None else "",
+
+        "triplet": rn_json["properties"]["freres_info"]
     }
 
 
 if __name__ == "__main__":
     matricule = input("Matricule of the Repère de nivellement: ")
-    print_fiche(dict_from_matricule(choose_rn_from_matricule(matricule)))
+    print_fiche(better_dict(dict_from_matricule(matricule)))
     # I usually test those benchmarks, for their particularities:
     # M.AC - 0-VIII (repère fondamental)
     # T'.D.S3 - 17
