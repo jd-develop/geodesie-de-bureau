@@ -107,14 +107,17 @@ def print_fiche(rn_json: BetterDict):
 
     print()
     print(RED + "=== Remarques ===" + RESET)
-    print(rn_json["remarques"])
+    if rn_json["remarques"] != "":
+        print(rn_json["remarques"])
 
     print(rn_json["exploitabilite_gnss"])
 
     if rn_json["hors_ign"]:
         print(RED + "Ce repère n’a pas été observé par l’IGN." + RESET)
 
-    # TODO triplets de nivellement
+    if rn_json["triplet"] is not None:
+        print(BLUE + f"Ce repère appartient à un triplet.{RESET} Liste des repères du triplet :", end=" ")
+        print(rn_json["triplet"])
 
 
 def dict_from_matricule(matricule_to_use: str) -> RNJSON:
@@ -155,6 +158,11 @@ def better_dict(rn_json: RNJSON) -> BetterDict:
     rep_hori = rn_json["properties"]["rep_hori"]
     rep_vert = rn_json["properties"]["rep_vert"]
     geod_info = rn_json["properties"]["jumeau_info"]
+    triplet_brut = rn_json["properties"]["freres_info"]
+    if triplet_brut is None:
+        triplet = None
+    else:
+        triplet = triplet_brut.strip().replace(" , ", ", ")
 
     return {
         "matricule": rn_json["properties"]["nom"],
@@ -203,11 +211,11 @@ def better_dict(rn_json: RNJSON) -> BetterDict:
         "reperement_vertical": rep_vert if rep_vert is not None else "",
 
         "hors_ign": rn_json["properties"]["obs_org"] not in ["100001", "100063"],
-        "remarques": rn_json["properties"]["remarque"],
+        "remarques": rn_json["properties"]["remarque"].strip(),
         "exploitabilite_gnss": get_gnss_exploit(rn_json["properties"]["expl_gps"]),
         "geod_info": geod_info if geod_info is not None else "",
 
-        "triplet": rn_json["properties"]["freres_info"]
+        "triplet": triplet
     }
 
 
