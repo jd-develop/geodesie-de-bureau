@@ -17,9 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Literal
-from typing_classes import ÉTAT_LITERAL, TYPE_LITERAL, GNSS_EXPL_LITERAL
-from typing_classes import SYSTÈME_ALTIMÉTRIQUE_LITERAL, ALTITUDE_TYPE_LITERAL
-from typing_classes import GeodeticError
+from ign.ngf.typing_classes import ÉTAT_LITERAL, TYPE_LITERAL, GNSS_EXPL_LITERAL
+from ign.ngf.typing_classes import SYSTÈME_ALTIMÉTRIQUE_LITERAL
+from ign.ngf.typing_classes import ALTITUDE_TYPE_LITERAL
+from ign.ngf.typing_classes import GeodeticError
 
 RN_TYPE_CODE: dict[str, TYPE_LITERAL] = {
     "INCONNU": "Inconnu",

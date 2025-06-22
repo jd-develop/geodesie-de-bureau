@@ -1,0 +1,12 @@
+Aide de l’interface en ligne de commande de Géodésie de Bureau
+
+Légende :
+<argument>          : argument obligatoire
+[argument]          : argument optionnel
+
+Commandes :
+quitter             : Quitte le programme.
+aide [commande]     : Affiche ce message d’aide, ou bien le message d’aide de
+                      [commande].
+ign-nivf <commande> : Invoque l’API de l’IGN. Pour une liste de commandes
+                      disponibles, utilisez `help ign-nivf'.

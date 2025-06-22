@@ -1,0 +1,4 @@
+aide [commande]
+
+Affiche un message d’aide sur [commande], ou bien un message d’aide générique
+si [commande] n’est pas spécifié.

@@ -20,8 +20,8 @@
                      (NGF-nivf, i.e. metropolitan France including Corsica)
 """
 import requests
-from typing_classes import *
-from rn_types import *
+from ign.ngf.rn_types import *
+from ign.ngf.typing_classes import *
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -38,6 +38,17 @@ def get_params_from_matricule(matricule: str) -> dict[str, str]:
         "TYPENAME": "GEODESIE:data_geod",
         "OUTPUTFORMAT": "application/json",
         "cql_filter": f"nom='{matricule}' and domaine='nivf'"
+    }
+
+
+def get_params_from_commune(insee: str) -> dict[str, str]:
+    return {
+        "SERVICE": "WFS",
+        "VERSION": "2.0.0",
+        "REQUEST": "GetFeature",
+        "TYPENAME": "GEODESIE:data_geod",
+        "OUTPUTFORMAT": "application/json",
+        "cql_filter": f"insee='{insee}' and domaine='nivf'"
     }
 
 
@@ -115,7 +126,7 @@ def print_fiche(rn_json: BetterDict):
     if rn_json["hors_ign"]:
         print(RED + "Ce repère n’a pas été observé par l’IGN." + RESET)
 
-    if rn_json["triplet"] is not None:
+    if rn_json["triplet"] is not None and rn_json["triplet"] != "":
         print(BLUE + f"Ce repère appartient à un triplet.{RESET} Liste des repères du triplet :", end=" ")
         print(rn_json["triplet"])
 
@@ -138,6 +149,23 @@ def dict_from_matricule(matricule_to_use: str) -> RNJSON:
 
     rn_json = response_json["features"][0]
     return rn_json
+
+
+def dicts_from_insee(insee: str) -> list[RNJSON]:
+    """
+    Returns a list of all the Repères de Nivellement of the commune number
+    `insee'
+    """
+
+    response = requests.get(URL, params=get_params_from_commune(insee))
+    response_json = response.json()
+    if response_json["numberMatched"] == 0:
+        raise GeodeticError(
+            f"Commune '{insee}' not found or no Repère de Nivellement in commune '{insee}'."
+        )
+
+    rns_json = response_json["features"]
+    return rns_json
 
 
 def better_dict(rn_json: RNJSON) -> BetterDict:
@@ -220,8 +248,15 @@ def better_dict(rn_json: RNJSON) -> BetterDict:
 
 
 if __name__ == "__main__":
-    matricule = input("Matricule of the Repère de nivellement: ")
-    print_fiche(better_dict(dict_from_matricule(matricule)))
+    if input("Matricule or INSEE? [M/i] ") in ["i", "I"]:
+        insee = input("INSEE number of a commune: ")
+        rns = map(better_dict, dicts_from_insee(insee))
+        for rn in rns:
+            print_fiche(rn)
+            print()
+    else:
+        matricule = input("Matricule of the Repère de nivellement: ")
+        print_fiche(better_dict(dict_from_matricule(matricule)))
     # I usually test those benchmarks, for their particularities:
     # M.AC - 0-VIII (repère fondamental)
     # T'.D.S3 - 17
