@@ -1,0 +1,18 @@
+/
+|- (version number)
+|  |- data
+|  |  |- types
+|  |  |  |- point_type.json (file that defines all the JSON fields of a particular point type – for instance, NGF RNs)
+|  |  |- points
+|  |  |  |- (type)
+|  |  |  |  |- matricule.json (contains one point)
+|  |  |- visites
+|  |  |  |- (year)
+|  |  |  |  |- (month)
+|  |  |  |  |  |- (day)
+|  |  |  |  |  |  |- (id)  (id of the visite)
+|  |  |  |  |  |  |  |- visite.json (contains the type & matricule of a point, and additional info (such as point state, …))
+|  |  |  |  |  |  |  |- (photos)
+|  |- options
+|  |  |- …
+|- …
