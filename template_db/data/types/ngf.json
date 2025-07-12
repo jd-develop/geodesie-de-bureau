@@ -1,0 +1,53 @@
+{
+    "matricule": "str",
+    "cid": "int",
+    "fiche_url": "str",
+
+    "systeme_altimetrique": "NGF-IGN 1969|NGF-IGN 1978",
+    "altitude": "float",
+    "altitude_type": "Altitude normale|Altitude orthométrique|Altitude provisoire",
+
+    "derniere_observation": "str",
+    "nouveau_calcul": "str",
+    "derniere_visite": "str",
+    "etat": "Bon état|Imprenable|Mauvais état|Non retrouvé|Présumé déplacé|Exploitable, en mauvais état ou légèrement incliné|Incliné fortement|Bon état mais douteux",
+
+    "type": "Inconnu|Repère console|Rivet|Repère Bourdalouë|Repère PLM (Chemin de fer Paris-Lyon-Méditerranée)|Repère MRU (Ministère Reconstruction Urbanisme)|Repère ponts et chaussées|Repère navigation|Repère ville de Paris|Repère cylindrique du Nivellement Général|Repère local|Repère hexagonal|Repère local, repère dans un système local|Échelle hydrométrique|Repère boule|Repère italien|Repère de crue|Repère octogonal|Repère construction|Repère EDF|Repère SNCF|Repère cadastre|Repère allemand|Repère belge|Repère luxembourgeois|Repère suisse|Repère espagnol|Repère ville de Marseille|Trait de crue|Borne|Repère SHOM (Service Hydrographique et Océanographique de la Marine)|Repère fondamental|Tube|Repère IPG (Institut de Physique du Globe)|Repère conique|Repère en fonte triangulaire|Repère reconstruction",
+    "type_complement": "str",
+    "canex_info": "str|None",
+    "type_complement_avec_canex": "str",
+
+    "longitude": "float",
+    "latitude": "float",
+    "longitude_dms": "str",
+    "latitude_dms": "str",
+    "dms_syst_et_ellipsoide": "str",
+    "e": "int",
+    "n": "int",
+    "en_syst_et_ellipsoide": "str",
+
+    "entite": "str",
+    "entite_no": "str",
+    "entite_nature": "str",
+    "insee": "str",
+    "commune": "str",
+    "voie_suivie": "str",
+    "voie_de": "str",
+    "voie_vers": "str",
+    "voie_cote": "str",
+    "voie_pk": "float|None",
+    "distance": "float|None",
+    "du_repere": "str|None",
+    "localisation": "str",
+    "support": "str",
+    "partie_support": "str",
+    "reperement_horizontal": "str",
+    "reperement_vertical": "str",
+
+    "triplet": "str|None",
+
+    "hors_ign": "bool",
+    "remarques": "str",
+    "exploitabilite_gnss": "Exploitable directement par GNSS|Exploitable par GNSS depuis une station excentrée|Inexploitable par GNSS|Exploitation par GNSS inconnue",
+    "geod_info": "str"
+}

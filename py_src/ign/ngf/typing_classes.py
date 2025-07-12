@@ -243,7 +243,7 @@ class BetterDict(TypedDict):
     cid: int  # id
     fiche_url: str
 
-    systeme_altimetrique: Literal["NGF-IGN 1969", "NGF-IGN 1978"]  # cp1_srv
+    systeme_altimetrique: SYSTÈME_ALTIMÉTRIQUE_LITERAL  # cp1_srv
     altitude: float  # cp1_coord3
     # altitude_complementaire: str  # useless for RNs, only used for geodetic points!
     altitude_type: ALTITUDE_TYPE_LITERAL  # cp1_altitude_type
