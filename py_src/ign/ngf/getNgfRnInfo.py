@@ -134,7 +134,11 @@ def print_fiche(rn_json: BetterDict):
 def dict_from_matricule(matricule_to_use: str) -> RNJSON:
     """Returns the dict of the Repère de Nivellement from its matricule"""
 
-    matricule_with_double_primes = matricule_to_use.replace("’", "'").replace("'", "''").strip()
+    matricule_with_double_primes = \
+        matricule_to_use.replace("’", "'") \
+            .replace("''", '"') \
+            .replace("'", "''") \
+            .strip()
 
     response = requests.get(URL, params=get_params_from_matricule(matricule_with_double_primes))
     response_json = response.json()
