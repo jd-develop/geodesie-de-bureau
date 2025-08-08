@@ -38,13 +38,14 @@ print("le modifier sous les termes de la Licence GNU General Public License")
 print("publiée par la Free Software Foundation, dans sa version 3 ou (à votre")
 print("guise) n’importe quelle version ultérieure")
 print()
-print("Tapez 'aide' pour obtenir de l’aide, et 'quitter' pour quitter le programme")
+print("Tapez 'aide' pour obtenir de l’aide, et 'quitter' pour quitter le "
+      "programme")
 print()
 
 
 while True:
     try:
-        command = input("gdb> ").strip().split(maxsplit=2)
+        command = input("gdb> ").strip().split(maxsplit=1)
     except KeyboardInterrupt:
         print("Interruption par l’utilisateur")
         sys.exit()
@@ -56,21 +57,22 @@ while True:
     # print(command)
     if command[0] in ["exit", "quitter"]:
         sys.exit()
-    elif command[0] == "aide":
+    elif command[0] in ["aide", "help"]:
         if len(command) == 1:
             with open("cli_help/help", "r+", encoding="UTF-8") as cli_help:
                 print(cli_help.read())
         else:
             help_command(command[1])
-    elif command[0] == "ign-nivf":
+    elif command[0] in ["ign-nivf", "ign-nvif"]:
         if len(command) == 1:
             print("Erreur : sous-commande attendue")
             continue
-        elif command[1] == "recupinsee":
-            if len(command) == 2:
+        subcommand = command[1].split(maxsplit=1)
+        if subcommand[0] == "recupinsee":
+            if len(subcommand) == 1:
                 print("Erreur : numéro INSEE d’une commune attendu")
                 continue
-            insee = command[2]
+            insee = subcommand[1]
 
             try:
                 rns = map(ngf.better_dict, ngf.dicts_from_insee(insee))
@@ -89,13 +91,24 @@ while True:
             for rn in rns:
                 ngf.print_fiche(rn)
                 print()
-        elif command[1] == "recupmatricule":
-            if len(command) == 2:
+        elif subcommand[0] == "recupmatricule":
+            if len(subcommand) == 1:
                 print("Erreur : matricule de repère de nivellement attendu")
                 continue
-            matricule = command[2]
+            matricule = subcommand[1]
             try:
-                ngf.print_fiche(ngf.better_dict(ngf.dict_from_matricule(matricule)))
+                ngf.print_fiche(
+                    ngf.better_dict(
+                        ngf.dict_from_matricule(
+                            matricule
+                        )
+                    ),
+                    ngf.get_lien_direct_from_matricule(
+                        ngf.formatted_matricule(
+                            matricule
+                        )
+                    )
+                )
                 print()
             except ngf.GeodeticError:
                 print("Erreur : matricule inconnu ou non-unique")

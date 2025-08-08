@@ -41,6 +41,14 @@ def get_params_from_matricule(matricule: str) -> dict[str, str]:
     }
 
 
+def get_lien_direct_from_matricule(matricule: str) -> str:
+    return \
+        f"\x1b]8;;https://data.geopf.fr/wfs?SERVICE=WFS&VERSION=2.0.0&" \
+        f"REQUEST=GetFeature&TYPENAME=GEODESIE:data_geod&OUTPUTFORMAT=" \
+        f"application/json&cql_filter=nom=%27{matricule}%27+and+domaine" \
+        f"=%27nivf%27\x1b\\Ici\x1b]8;;\x1b\\"
+
+
 def get_params_from_commune(insee: str) -> dict[str, str]:
     return {
         "SERVICE": "WFS",
@@ -52,11 +60,13 @@ def get_params_from_commune(insee: str) -> dict[str, str]:
     }
 
 
-def print_fiche(rn_json: BetterDict):
+def print_fiche(rn_json: BetterDict, lien_direct: str | None = None):
     """Affiche toutes les informations sous une forme compréhensible dans la console"""
     print(RED + "=============== Repère de nivellement ===============" + RESET)
     print()
-    print(BLUE + f"Fiche en ligne{RESET} : {rn_json['fiche_url']}")
+    print(BLUE + f"Fiche en ligne{RESET} : \x1b]8;;{rn_json['fiche_url']}\x1b\\{rn_json['fiche_url']}\x1b]8;;\x1b\\")
+    if lien_direct is not None:
+        print(BLUE + f"Geojson brut en ligne{RESET} : {lien_direct}")
     print()
     print(BLUE + f"Matricule{RESET} : {rn_json['matricule']}")
     print(BLUE + f"Système altimétrique{RESET} : {rn_json['systeme_altimetrique']}")
@@ -131,14 +141,21 @@ def print_fiche(rn_json: BetterDict):
         print(rn_json["triplet"])
 
 
+def formatted_matricule(matricule_to_use: str) -> str:
+    """
+    Returns a matricule usable for the API from a matricule entered by the
+    user
+    """
+    return matricule_to_use.replace("’", "'") \
+               .replace("''", '"') \
+               .replace("'", "''") \
+               .strip()
+
+
 def dict_from_matricule(matricule_to_use: str) -> RNJSON:
     """Returns the dict of the Repère de Nivellement from its matricule"""
 
-    matricule_with_double_primes = \
-        matricule_to_use.replace("’", "'") \
-            .replace("''", '"') \
-            .replace("'", "''") \
-            .strip()
+    matricule_with_double_primes = formatted_matricule(matricule_to_use)
 
     response = requests.get(URL, params=get_params_from_matricule(matricule_with_double_primes))
     response_json = response.json()
