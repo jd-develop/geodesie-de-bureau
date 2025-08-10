@@ -189,6 +189,27 @@ def dicts_from_insee(insee: str) -> list[RNJSON]:
     return rns_json
 
 
+def better_dicts_from_insee(insee: str):
+    """Renvoie un geojson avec les betterdicts comme features"""
+    response = requests.get(URL, params=get_params_from_commune(insee))
+    response_json = response.json()
+
+    if response_json["numberMatched"] == 0:
+        raise GeodeticError(
+            f"Commune '{insee}' not found or no Repère de Nivellement in commune '{insee}'."
+        )
+
+    response_json["features"] = list(map(better_dict_geojson, response_json["features"]))
+    return response_json
+
+
+def better_dict_geojson(rn_json: RNJSON):
+    """Same as better_dict but keeps the GEOJSON structure"""
+    new_json = rn_json.copy()
+    new_json["properties"] = better_dict(rn_json)  # type: ignore  # FIXME
+    return new_json
+
+
 def better_dict(rn_json: RNJSON) -> BetterDict:
     """Returns the useful information contained in the dictionnary"""
     fiche_url = rn_json["properties"]["url_pdf"]

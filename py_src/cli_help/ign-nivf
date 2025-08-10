@@ -5,10 +5,25 @@ Invoque l’API de l’IGN (nivf). Commandes disponibles :
 ign-nivf recupmatricule <matricule> :
         Récupère et affiche la fiche du repère de nivellement nivf de matricule
         <matricule>. Affiche une erreur si le matricule n’est pas trouvé ou
-        s’il n’est pas unique.
+        s’il n’est pas unique. Écrire « plusieurs » dans le champ <matricule>
+        permet d’écrire plusieurs matricules à la suite (stopper avec « stop »).
+
+ign-nivf sauvematricule <matricule> :
+        Récupère et sauvegarde la fiche du repère de nivellement nivf de
+        matricule <matricule>. Affiche une erreur si le matricule n’est pas
+        trouvé ou s’il n’est pas unique. Écrire « plusieurs » dans le champ
+        <matricule> permet d’écrire plusieurs matricules à la suite (stopper
+        avec « stop »).
 
 ign-nivf recupinsee <insee> :
         Récupère et affiche les fiches de tous les repères de nivellement nivf
         dans la commune portant le numéro INSEE <insee>. Affiche une erreur si
         la commune n’existe pas ou si elle ne possède pas de repère de
         nivellement.
+
+ign-nivf sauveinsee <insee> :
+        Récupère et sauvegarde les fiches de tous les repères de nivellement
+        nivf dans la commune portant le numéro INSEE <insee>. Affiche une erreur
+        si la commune n’existe pas ou si elle ne possède pas de repère de
+        nivellement. Écrire « plusieurs » dans le champ <insee> permet d’écrire
+        plusieurs numéros INSEE à la suite (stopper avec « stop »).
