@@ -93,6 +93,14 @@ def sauve_matricule(rn_json):  # type: ignore
         json.dump(data, geojson, indent=4)
 
 
+""" renvoie False si un fichier existe déjà """
+def create_dir() -> bool:
+    if os.path.exists(os.path.expanduser("~/Documents/gdb")):
+        return not os.path.isfile(os.path.expanduser("~/Documents/gdb"))
+    os.mkdir(os.path.expanduser("~/Documents/gdb"))
+    return True
+
+
 print("Géodésie de Bureau")
 print()
 print("Ce programme est un logiciel libre, vous pouvez le redistribuer et/ou")
@@ -159,12 +167,13 @@ while True:
 
                     nom_commune = rns["features"][0]["properties"]["commune"]
                     print(f"Sauvegarde dans ~/Documents/gdb/rns{insee}-{nom_commune}.geojson")
-                    with open(
-                        os.path.expanduser(f"~/Documents/gdb/rns{insee}-{nom_commune}.geojson"),
-                        "w+",
-                        encoding="UTF-8"
-                    ) as insee_file:
-                        json.dump(rns, insee_file, indent=4)
+                    if create_dir():
+                        with open(
+                            os.path.expanduser(f"~/Documents/gdb/rns{insee}-{nom_commune}.geojson"),
+                            "w+",
+                            encoding="UTF-8"
+                        ) as insee_file:
+                            json.dump(rns, insee_file, indent=4)
             else:
                 rns = get_from_insee(ngf.better_dicts_from_insee, insee)
 
@@ -173,12 +182,13 @@ while True:
 
                 nom_commune = rns["features"][0]["properties"]["commune"]
                 print(f"Sauvegarde dans ~/Documents/gdb/rns{insee}-{nom_commune}.geojson")
-                with open(
-                    os.path.expanduser(f"~/Documents/gdb/rns{insee}-{nom_commune}.geojson"),
-                    "w+",
-                    encoding="UTF-8"
-                ) as insee_file:
-                    json.dump(rns, insee_file, indent=4)
+                if create_dir():
+                    with open(
+                        os.path.expanduser(f"~/Documents/gdb/rns{insee}-{nom_commune}.geojson"),
+                        "w+",
+                        encoding="UTF-8"
+                    ) as insee_file:
+                        json.dump(rns, insee_file, indent=4)
 
         elif subcommand[0] in ["recupmatricule", "sauvematricule"]:
             if len(subcommand) == 1:
